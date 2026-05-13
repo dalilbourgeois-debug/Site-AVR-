@@ -1,0 +1,428 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+
+type Step = 1 | 2 | 3;
+
+const SERVICES = [
+  { id: "vidange", label: "Vidange / Révision", icon: "🛢️", desc: "Entretien périodique" },
+  { id: "freins", label: "Freins", icon: "🛞", desc: "Plaquettes, disques" },
+  { id: "pneus", label: "Pneus", icon: "🚗", desc: "Montage, équilibrage" },
+  { id: "carrosserie", label: "Carrosserie / Sinistre", icon: "🔧", desc: "AXA · Direct Assurance" },
+  { id: "controle-technique", label: "Contrôle technique", icon: "📋", desc: "Périodique ou contre-visite" },
+  { id: "autre", label: "Autre", icon: "💬", desc: "Je décris mon besoin" }
+];
+
+const MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+const JOURS_SHORT = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
+
+type DaySlot = {
+  date: Date;
+  iso: string;        // YYYY-MM-DD
+  label: string;      // ex: "Mar 14 mai"
+  dayShort: string;   // "Mar"
+  dayNum: number;     // 14
+  monthShort: string; // "mai"
+  times: string[];
+  isToday: boolean;
+};
+
+export default function RdvFlow({ servicePreset }: { servicePreset?: string }) {
+  const [step, setStep] = useState<Step>(1);
+  const [service, setService] = useState<string>(servicePreset ?? "");
+  const [autreTexte, setAutreTexte] = useState("");
+  const [selectedDayIso, setSelectedDayIso] = useState<string | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [contact, setContact] = useState({ nom: "", email: "", telephone: "", immat: "" });
+  const [status, setStatus] = useState<"idle" | "loading" | "ok" | "error">("idle");
+  const [error, setError] = useState<string | null>(null);
+
+  const days = useMemo(() => generateDays(14), []);
+  const selectedDay = days.find((d) => d.iso === selectedDayIso) ?? null;
+
+  // Quand on change de jour, on réinitialise l'heure choisie
+  useEffect(() => {
+    setSelectedTime(null);
+  }, [selectedDayIso]);
+
+  async function submit() {
+    setStatus("loading");
+    setError(null);
+    try {
+      const res = await fetch("/api/atelier/rdv", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          service,
+          autreTexte: service === "autre" ? autreTexte : "",
+          slot: selectedDay && selectedTime ? { day: selectedDay.label, time: selectedTime } : null,
+          contact
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur");
+      setStatus("ok");
+    } catch (e) {
+      setStatus("error");
+      setError((e as Error).message);
+    }
+  }
+
+  if (status === "ok") {
+    return (
+      <div className="bg-white border border-gray-100 p-10 text-center">
+        <div className="w-16 h-16 mx-auto rounded-full bg-brand-accent text-white flex items-center justify-center text-3xl">
+          ✓
+        </div>
+        <h2 className="mt-4 text-2xl font-serif text-brand">Rendez-vous demandé</h2>
+        <p className="mt-2 text-gray-700">
+          Pour le <strong>{selectedDay?.label}</strong> à <strong>{selectedTime}</strong>.
+        </p>
+        <p className="mt-2 text-sm text-gray-600 max-w-md mx-auto">
+          Vous allez recevoir un email et un SMS de confirmation, puis un rappel la veille.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <Steps step={step} />
+
+      {/* ÉTAPE 1 — Prestation */}
+      {step === 1 && (
+        <div className="bg-white border border-gray-100 p-6 md:p-8 mt-8">
+          <h2 className="font-serif text-xl text-brand mb-1">Quelle prestation ?</h2>
+          <p className="text-sm text-gray-500 mb-6">Choisissez ce dont vous avez besoin.</p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {SERVICES.map((s) => {
+              const isSelected = service === s.id;
+              return (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setService(s.id)}
+                  className={`p-4 text-left transition-all border-2 ${
+                    isSelected
+                      ? "border-brand-accent bg-brand-accent/5"
+                      : "border-gray-200 hover:border-brand"
+                  }`}
+                >
+                  <div className="text-2xl">{s.icon}</div>
+                  <div className="mt-2 font-serif text-base text-brand">{s.label}</div>
+                  <div className="text-xs text-gray-500 mt-1">{s.desc}</div>
+                </button>
+              );
+            })}
+          </div>
+          {service === "autre" && (
+            <div className="mt-6">
+              <label className="label">Décrivez votre besoin</label>
+              <textarea
+                className="input min-h-[100px]"
+                value={autreTexte}
+                onChange={(e) => setAutreTexte(e.target.value)}
+                placeholder="Ex : bruit suspect côté roue avant droite, à diagnostiquer."
+              />
+            </div>
+          )}
+
+          {/* Encart info pour la carrosserie */}
+          {service === "carrosserie" && (
+            <div className="mt-6 bg-brand-accent/5 border-l-2 border-brand-accent p-4 text-sm text-gray-700">
+              <strong>Vous êtes assuré AXA ou Direct Assurance ?</strong> Nous sommes agréés —
+              nous gérons l'expertise, la déclaration et les réparations.
+            </div>
+          )}
+
+          <div className="mt-8 flex justify-end">
+            <button
+              className="inline-flex items-center justify-center px-8 py-3 bg-brand text-white text-sm tracking-[0.2em] uppercase hover:bg-brand-light transition disabled:opacity-40"
+              disabled={!service || (service === "autre" && !autreTexte.trim())}
+              onClick={() => setStep(2)}
+            >
+              Continuer →
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ÉTAPE 2 — Calendrier */}
+      {step === 2 && (
+        <div className="bg-white border border-gray-100 p-6 md:p-8 mt-8">
+          <h2 className="font-serif text-xl text-brand mb-1">Choisissez votre créneau</h2>
+          <p className="text-sm text-gray-500 mb-6">
+            Sélectionnez d'abord un jour, puis une heure parmi les créneaux disponibles.
+          </p>
+
+          {/* En-tête calendrier */}
+          <div className="text-xs tracking-[0.3em] uppercase text-brand-accent mb-3">
+            {humanRangeLabel(days)}
+          </div>
+
+          {/* Grille des jours */}
+          <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-7 gap-2">
+            {days.map((d) => {
+              const isSelected = d.iso === selectedDayIso;
+              const isClosed = d.times.length === 0;
+              return (
+                <button
+                  key={d.iso}
+                  type="button"
+                  disabled={isClosed}
+                  onClick={() => setSelectedDayIso(d.iso)}
+                  className={`p-3 text-center border-2 transition-all ${
+                    isSelected
+                      ? "border-brand-accent bg-brand-accent text-white"
+                      : isClosed
+                      ? "border-gray-100 bg-gray-50 text-gray-300 cursor-not-allowed"
+                      : "border-gray-200 hover:border-brand"
+                  }`}
+                >
+                  <div className={`text-[10px] tracking-widest uppercase ${isSelected ? "text-white/70" : "text-gray-400"}`}>
+                    {d.dayShort}
+                  </div>
+                  <div className={`text-2xl font-serif mt-1 ${isSelected ? "text-white" : "text-brand"}`}>
+                    {d.dayNum}
+                  </div>
+                  <div className={`text-[10px] tracking-widest uppercase ${isSelected ? "text-white/70" : "text-gray-400"}`}>
+                    {d.monthShort}
+                  </div>
+                  {!isClosed && (
+                    <div className={`text-[9px] tracking-wider mt-1 ${isSelected ? "text-white/90" : "text-brand-accent"}`}>
+                      {d.times.length} dispo
+                    </div>
+                  )}
+                  {isClosed && (
+                    <div className="text-[9px] tracking-wider mt-1 text-gray-300">fermé</div>
+                  )}
+                  {d.isToday && (
+                    <div className={`text-[9px] mt-0.5 ${isSelected ? "text-white" : "text-brand"}`}>
+                      · aujourd'hui
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Créneaux du jour sélectionné */}
+          <div className="mt-8">
+            {!selectedDay && (
+              <div className="text-center text-sm text-gray-500 py-8 border-2 border-dashed border-gray-200">
+                Sélectionnez un jour pour voir les créneaux disponibles.
+              </div>
+            )}
+            {selectedDay && (
+              <>
+                <div className="text-xs tracking-[0.3em] uppercase text-brand-accent mb-3">
+                  Créneaux du {selectedDay.label}
+                </div>
+                {selectedDay.times.length === 0 ? (
+                  <div className="text-sm text-gray-500">Fermé ce jour.</div>
+                ) : (
+                  <div className="space-y-4">
+                    <SlotGroup
+                      title="Matin"
+                      times={selectedDay.times.filter((t) => t < "12:00")}
+                      selected={selectedTime}
+                      onSelect={setSelectedTime}
+                    />
+                    <SlotGroup
+                      title="Après-midi"
+                      times={selectedDay.times.filter((t) => t >= "12:00")}
+                      selected={selectedTime}
+                      onSelect={setSelectedTime}
+                    />
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+
+          <div className="mt-8 flex flex-col sm:flex-row gap-2 justify-between">
+            <button
+              className="inline-flex items-center justify-center px-6 py-3 border border-brand text-brand text-sm tracking-[0.2em] uppercase hover:bg-brand hover:text-white transition"
+              onClick={() => setStep(1)}
+            >
+              ← Retour
+            </button>
+            <button
+              className="inline-flex items-center justify-center px-8 py-3 bg-brand text-white text-sm tracking-[0.2em] uppercase hover:bg-brand-light transition disabled:opacity-40"
+              disabled={!selectedTime}
+              onClick={() => setStep(3)}
+            >
+              Continuer →
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ÉTAPE 3 — Coordonnées */}
+      {step === 3 && (
+        <div className="bg-white border border-gray-100 p-6 md:p-8 mt-8">
+          <h2 className="font-serif text-xl text-brand mb-1">Vos coordonnées</h2>
+          <p className="text-sm text-gray-500 mb-6">
+            Vous allez recevoir une confirmation par email et SMS, puis un rappel la veille.
+          </p>
+
+          {/* Récap */}
+          <div className="bg-gray-50 border-l-2 border-brand-accent p-4 mb-6 text-sm">
+            <div className="font-medium text-brand">
+              {SERVICES.find((s) => s.id === service)?.label}
+            </div>
+            <div className="text-gray-600 mt-1">
+              {selectedDay?.label} · {selectedTime}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Field label="Nom complet" value={contact.nom} onChange={(v) => setContact({ ...contact, nom: v })} required />
+            <Field label="Téléphone" type="tel" value={contact.telephone} onChange={(v) => setContact({ ...contact, telephone: v })} required />
+            <Field label="Email" type="email" value={contact.email} onChange={(v) => setContact({ ...contact, email: v })} required />
+            <Field label="Immatriculation" value={contact.immat} onChange={(v) => setContact({ ...contact, immat: v })} placeholder="AB-123-CD" />
+          </div>
+
+          {error && <div className="mt-4 text-sm text-red-600">{error}</div>}
+
+          <div className="mt-8 flex flex-col sm:flex-row gap-2 justify-between">
+            <button
+              className="inline-flex items-center justify-center px-6 py-3 border border-brand text-brand text-sm tracking-[0.2em] uppercase hover:bg-brand hover:text-white transition"
+              onClick={() => setStep(2)}
+            >
+              ← Retour
+            </button>
+            <button
+              className="inline-flex items-center justify-center px-8 py-3 bg-brand-accent text-white text-sm tracking-[0.2em] uppercase hover:brightness-110 transition disabled:opacity-40"
+              disabled={!contact.nom || !contact.email || !contact.telephone || status === "loading"}
+              onClick={submit}
+            >
+              {status === "loading" ? "Envoi..." : "Confirmer →"}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SlotGroup({
+  title,
+  times,
+  selected,
+  onSelect
+}: {
+  title: string;
+  times: string[];
+  selected: string | null;
+  onSelect: (t: string) => void;
+}) {
+  if (times.length === 0) return null;
+  return (
+    <div>
+      <div className="text-[10px] tracking-widest uppercase text-gray-400 mb-2">{title}</div>
+      <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+        {times.map((t) => {
+          const isSel = selected === t;
+          return (
+            <button
+              key={t}
+              type="button"
+              onClick={() => onSelect(t)}
+              className={`py-2.5 text-sm font-medium border transition ${
+                isSel
+                  ? "bg-brand text-white border-brand"
+                  : "border-gray-200 hover:border-brand-accent hover:text-brand-accent"
+              }`}
+            >
+              {t}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function Steps({ step }: { step: Step }) {
+  const labels = ["Prestation", "Créneau", "Coordonnées"];
+  return (
+    <ol className="flex items-center gap-3 text-sm">
+      {labels.map((l, i) => {
+        const n = (i + 1) as Step;
+        const active = step === n;
+        const done = step > n;
+        return (
+          <li key={l} className="flex items-center gap-3 flex-1">
+            <div
+              className={`w-9 h-9 flex items-center justify-center text-sm font-bold transition-colors ${
+                done ? "bg-brand text-white" : active ? "bg-brand-accent text-white" : "bg-gray-200 text-gray-500"
+              }`}
+            >
+              {done ? "✓" : n}
+            </div>
+            <span className={`hidden sm:inline tracking-[0.2em] uppercase text-xs ${active ? "font-semibold text-brand" : "text-gray-400"}`}>
+              {l}
+            </span>
+            {i < labels.length - 1 && <div className={`flex-1 h-px ${done ? "bg-brand" : "bg-gray-200"}`} />}
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+function Field({
+  label, value, onChange, type = "text", placeholder, required
+}: {
+  label: string; value: string; onChange: (v: string) => void; type?: string; placeholder?: string; required?: boolean;
+}) {
+  return (
+    <div>
+      <label className="label">{label}{required && <span className="text-brand-accent"> *</span>}</label>
+      <input className="input" value={value} type={type} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} />
+    </div>
+  );
+}
+
+// Génère 14 jours à partir de demain (en excluant les dimanches)
+function generateDays(nb: number): DaySlot[] {
+  const out: DaySlot[] = [];
+  const todayMs = new Date();
+  todayMs.setHours(0, 0, 0, 0);
+  let i = 1;
+  while (out.length < nb && i < 30) {
+    const d = new Date(todayMs.getTime() + i * 86400000);
+    const dayIdx = d.getDay();
+    if (dayIdx === 0) { i++; continue; } // dimanche fermé
+    const isSat = dayIdx === 6;
+    const times = isSat
+      ? ["09:00", "10:00", "11:00"]
+      : ["08:30", "09:30", "10:30", "11:30", "14:00", "15:00", "16:00", "17:00"];
+    out.push({
+      date: d,
+      iso: d.toISOString().slice(0, 10),
+      label: new Intl.DateTimeFormat("fr-FR", {
+        weekday: "long", day: "numeric", month: "long"
+      }).format(d),
+      dayShort: JOURS_SHORT[(dayIdx + 6) % 7],
+      dayNum: d.getDate(),
+      monthShort: MOIS[d.getMonth()].slice(0, 4),
+      times,
+      isToday: false
+    });
+    i++;
+  }
+  return out;
+}
+
+function humanRangeLabel(days: DaySlot[]): string {
+  if (days.length === 0) return "";
+  const first = days[0].date;
+  const last = days[days.length - 1].date;
+  const sameMonth = first.getMonth() === last.getMonth();
+  if (sameMonth) {
+    return `${MOIS[first.getMonth()]} ${first.getFullYear()}`;
+  }
+  return `${MOIS[first.getMonth()]} – ${MOIS[last.getMonth()]} ${last.getFullYear()}`;
+}

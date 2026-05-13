@@ -1,0 +1,56 @@
+export type Statut = "disponible" | "reserve" | "vendu" | "masque";
+
+export type Vehicule = {
+  id: number;
+  vin: string;
+  slug: string;
+  marque: string;
+  modele: string;
+  version: string;
+  annee: number;
+  carrosserie?: string;
+  couleurExt?: string;
+  couleurInt?: string;
+  energie: string;
+  boite: string;
+  nbPortes?: number;
+  nbPlaces?: number;
+  puissanceFisc?: number;
+  puissanceReel?: number;
+  transmission?: string;
+  dateMec: string;
+  kilometrage: number;
+  kmGaranti?: boolean;
+  premiereMain?: boolean;
+  garantieDuree?: string;
+  garantieLibelle?: string;
+  prixTtc: number;
+  fraisCG?: number;
+  co2?: number;
+  critAir?: string;
+  commentairePublic?: string;
+  equipSerie?: string[];
+  equipOption?: string[];
+  equipPerso?: string[];
+  soh?: number;
+  autonomie?: number;
+  capaciteBat?: number;
+  tempsRecharge?: string;
+  statut: Statut;
+  dateArrivee: string;
+  dateSortie?: string;
+  photos: string[];
+  alaune?: boolean;
+};
+
+export type Reservation = {
+  id: string;
+  vehiculeSlug: string;
+  nom: string;
+  email: string;
+  telephone: string;
+  adresse?: string;
+  montantAcompte: number;
+  status: "pending" | "paid" | "cancelled";
+  createdAt: string;
+};
