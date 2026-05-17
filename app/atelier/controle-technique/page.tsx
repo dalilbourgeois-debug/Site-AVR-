@@ -9,7 +9,7 @@ export default function Page() {
       titre="Contrôle technique"
       description="Contrôle technique périodique et contre-visite, dans un atelier agréé. Rendez-vous rapide, résultat en moins d'une heure."
       image="https://picsum.photos/seed/ct-hero/1920/800"
-      rdvHref="/atelier/rdv?service=controle-technique"
+      rdvHref="/atelier/controle-technique/rdv"
       prestations={[
         "Contrôle périodique (4ᵉ année puis tous les 2 ans)",
         "Contre-visite",

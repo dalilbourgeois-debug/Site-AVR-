@@ -34,7 +34,6 @@ export default function Footer() {
             <li><Link href="/vehicules" className="hover:text-white text-gray-400">Nos véhicules</Link></li>
             <li><Link href="/atelier" className="hover:text-white text-gray-400">Atelier</Link></li>
             <li><Link href="/vendre-reprendre" className="hover:text-white text-gray-400">Vendre / Reprendre</Link></li>
-            <li><Link href="/garage" className="hover:text-white text-gray-400">Le garage</Link></li>
             <li><Link href="/contact" className="hover:text-white text-gray-400">Contact</Link></li>
           </ul>
         </div>

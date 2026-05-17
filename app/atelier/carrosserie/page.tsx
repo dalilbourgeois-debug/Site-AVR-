@@ -10,7 +10,7 @@ export default function Page() {
       description="Choc, accrochage, rayure, grêle : remise en état complète de votre véhicule. Nous gérons l'ensemble du dossier avec votre assurance."
       badge="Agréé AXA · Direct Assurance — sinistre géré de A à Z"
       image="https://picsum.photos/seed/carrosserie-hero/1920/800"
-      rdvHref="/atelier/rdv?service=carrosserie"
+      rdvHref="/atelier/carrosserie/rdv"
       prestations={[
         "Réparation tôlerie",
         "Redressage châssis (banc)",

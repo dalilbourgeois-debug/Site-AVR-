@@ -5,6 +5,7 @@ import type { Vehicule } from "@/lib/types";
 import { formatEur, formatKm, joursDepuis } from "@/lib/format";
 import { useCompare, useFavorites } from "@/hooks/useStorageList";
 import ShareButton from "@/components/ShareButton";
+import { showToast } from "@/lib/toast";
 
 export default function VehiculeCard({ v }: { v: Vehicule }) {
   const isNouveau = joursDepuis(v.dateArrivee) < 7;
@@ -55,7 +56,14 @@ export default function VehiculeCard({ v }: { v: Vehicule }) {
         <button
           type="button"
           aria-label={isFav ? "Retirer des favoris" : "Ajouter aux favoris"}
-          onClick={() => fav.toggle(v.slug)}
+          onClick={() => {
+            fav.toggle(v.slug);
+            showToast(
+              isFav
+                ? `Retiré de vos favoris`
+                : `${v.marque} ${v.modele} ajouté à vos favoris`
+            );
+          }}
           className={`w-9 h-9 flex items-center justify-center rounded-full backdrop-blur transition-all ${
             isFav
               ? "bg-brand-accent text-white"
@@ -105,7 +113,14 @@ export default function VehiculeCard({ v }: { v: Vehicule }) {
       {/* Bouton Comparer (collé en bas, hors du lien) */}
       <button
         type="button"
-        onClick={() => cmp.toggle(v.slug)}
+        onClick={() => {
+          cmp.toggle(v.slug);
+          showToast(
+            isComparing
+              ? "Retiré du comparateur"
+              : "Ajouté au comparateur"
+          );
+        }}
         className={`w-full text-[11px] tracking-[0.25em] uppercase py-2.5 border-t transition-colors ${
           isComparing
             ? "bg-brand-accent text-white border-brand-accent"

@@ -36,8 +36,7 @@ export default async function EssayerPage({
               required: true,
               options: [
                 { value: "semaine-matin", label: "En semaine, matin" },
-                { value: "semaine-aprem", label: "En semaine, après-midi" },
-                { value: "samedi", label: "Le samedi" }
+                { value: "semaine-aprem", label: "En semaine, après-midi" }
               ]
             },
             { name: "message", label: "Message (facultatif)", type: "textarea" }

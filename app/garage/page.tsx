@@ -44,7 +44,7 @@ export default function GaragePage() {
             <ul className="mt-4 text-sm space-y-2 text-gray-700">
               <li><strong>Adresse :</strong> 27 rue des Maraîchers, 44220 Couëron</li>
               <li><strong>Téléphone :</strong> 02 40 86 21 02</li>
-              <li><strong>Horaires :</strong> Lun–Ven 8h30–12h / 14h–18h · Sam 9h–12h</li>
+              <li><strong>Horaires :</strong> Lun–Ven 9h–12h / 14h–18h · fermé le week-end</li>
               <li><strong>Transports :</strong> Bus ligne 93</li>
             </ul>
           </div>

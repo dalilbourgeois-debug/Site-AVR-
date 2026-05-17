@@ -1,49 +1,115 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 type Step = 1 | 2 | 3;
+export type SectionId = "mecanique" | "carrosserie" | "controle-technique";
 
-const SERVICES = [
-  { id: "vidange", label: "Vidange / Révision", icon: "🛢️", desc: "Entretien périodique" },
-  { id: "freins", label: "Freins", icon: "🛞", desc: "Plaquettes, disques" },
-  { id: "pneus", label: "Pneus", icon: "🚗", desc: "Montage, équilibrage" },
-  { id: "carrosserie", label: "Carrosserie / Sinistre", icon: "🔧", desc: "AXA · Direct Assurance" },
-  { id: "controle-technique", label: "Contrôle technique", icon: "📋", desc: "Périodique ou contre-visite" },
-  { id: "autre", label: "Autre", icon: "💬", desc: "Je décris mon besoin" }
-];
+type Service = { id: string; label: string; icon: string; desc: string };
+
+type SectionConfig = {
+  id: SectionId;
+  label: string;
+  shortLabel: string;
+  icon: string;
+  services: Service[];
+};
+
+const CONFIG: Record<SectionId, SectionConfig> = {
+  mecanique: {
+    id: "mecanique",
+    label: "Atelier mécanique",
+    shortLabel: "Mécanique",
+    icon: "🔧",
+    services: [
+      { id: "revision", label: "Révision / Vidange", icon: "🛢️", desc: "Vidange + filtres" },
+      { id: "freins", label: "Freins", icon: "🛞", desc: "Plaquettes, disques" },
+      { id: "distribution", label: "Distribution", icon: "⚙️", desc: "Kit de distribution" },
+      { id: "echappement", label: "Échappement", icon: "💨", desc: "Silencieux, FAP, AdBlue" },
+      { id: "suspension", label: "Suspension", icon: "🛠️", desc: "Amortisseurs, géométrie" },
+      { id: "climatisation", label: "Climatisation", icon: "❄️", desc: "Recharge, désinfection" },
+      { id: "batterie", label: "Batterie", icon: "🔋", desc: "Test, remplacement" },
+      { id: "pneus", label: "Pneus", icon: "🚗", desc: "Montage, équilibrage" },
+      { id: "vitrage", label: "Pare-brise / Vitrage", icon: "🪟", desc: "Remplacement, impact" },
+      { id: "diagnostic", label: "Diagnostic", icon: "📊", desc: "Électronique, pannes" },
+      { id: "autre", label: "Autre", icon: "💬", desc: "Je décris mon besoin" }
+    ]
+  },
+  carrosserie: {
+    id: "carrosserie",
+    label: "Atelier carrosserie",
+    shortLabel: "Carrosserie",
+    icon: "🎨",
+    services: [
+      { id: "sinistre", label: "Sinistre", icon: "🚨", desc: "Agréé AXA · Direct Assurance" },
+      { id: "peinture", label: "Peinture", icon: "🖌️", desc: "Totale ou partielle" },
+      { id: "redressage", label: "Redressage / Tôlerie", icon: "🔨", desc: "Banc châssis" },
+      { id: "smart-repair", label: "Smart Repair", icon: "✨", desc: "Petites rayures, impacts" },
+      { id: "plastique", label: "Pare-chocs / Plastique", icon: "🚙", desc: "Remplacement, peinture" },
+      { id: "polish", label: "Polish", icon: "💎", desc: "Rénovation peinture" },
+      { id: "autre", label: "Autre", icon: "💬", desc: "Je décris mon besoin" }
+    ]
+  },
+  "controle-technique": {
+    id: "controle-technique",
+    label: "Contrôle technique",
+    shortLabel: "CT",
+    icon: "📋",
+    services: [
+      { id: "ct-periodique", label: "Contrôle périodique", icon: "📋", desc: "Tous les 2 ans" },
+      { id: "contre-visite", label: "Contre-visite", icon: "🔄", desc: "Après réparation" },
+      { id: "autre", label: "Autre", icon: "💬", desc: "Je décris mon besoin" }
+    ]
+  }
+};
 
 const MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
-const JOURS_SHORT = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
+const JOURS_SHORT = ["Lun", "Mar", "Mer", "Jeu", "Ven"];
 
 type DaySlot = {
   date: Date;
-  iso: string;        // YYYY-MM-DD
-  label: string;      // ex: "Mar 14 mai"
-  dayShort: string;   // "Mar"
-  dayNum: number;     // 14
-  monthShort: string; // "mai"
+  iso: string;
+  label: string;
+  dayShort: string;
+  dayNum: number;
+  monthShort: string;
   times: string[];
   isToday: boolean;
 };
 
-export default function RdvFlow({ servicePreset }: { servicePreset?: string }) {
+export default function RdvFlow({
+  section,
+  servicePreset
+}: {
+  section: SectionId;
+  servicePreset?: string;
+}) {
+  const cfg = CONFIG[section];
+  const searchParams = useSearchParams();
+
+  // Pré-remplissage via URL (ex : depuis la page atelier "Décrivez votre panne")
+  const initService = servicePreset ?? searchParams.get("service") ?? "";
+  const initDesc = searchParams.get("desc") ?? "";
+
   const [step, setStep] = useState<Step>(1);
-  const [service, setService] = useState<string>(servicePreset ?? "");
-  const [autreTexte, setAutreTexte] = useState("");
+  const [service, setService] = useState<string>(initService);
+  const [autreTexte, setAutreTexte] = useState(initDesc);
   const [selectedDayIso, setSelectedDayIso] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [contact, setContact] = useState({ nom: "", email: "", telephone: "", immat: "" });
   const [status, setStatus] = useState<"idle" | "loading" | "ok" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
 
-  const days = useMemo(() => generateDays(14), []);
+  // Chaque section a SON propre planning (ici on simule différentes indispos pour rendre visible le côté indépendant)
+  const days = useMemo(() => generateDays(14, section), [section]);
   const selectedDay = days.find((d) => d.iso === selectedDayIso) ?? null;
 
-  // Quand on change de jour, on réinitialise l'heure choisie
   useEffect(() => {
     setSelectedTime(null);
   }, [selectedDayIso]);
+
+  const selectedService = cfg.services.find((s) => s.id === service);
 
   async function submit() {
     setStatus("loading");
@@ -53,6 +119,7 @@ export default function RdvFlow({ servicePreset }: { servicePreset?: string }) {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
+          section: cfg.id,
           service,
           autreTexte: service === "autre" ? autreTexte : "",
           slot: selectedDay && selectedTime ? { day: selectedDay.label, time: selectedTime } : null,
@@ -76,6 +143,9 @@ export default function RdvFlow({ servicePreset }: { servicePreset?: string }) {
         </div>
         <h2 className="mt-4 text-2xl font-serif text-brand">Rendez-vous demandé</h2>
         <p className="mt-2 text-gray-700">
+          <strong>{cfg.label}</strong> · {selectedService?.label}
+        </p>
+        <p className="mt-1 text-gray-700">
           Pour le <strong>{selectedDay?.label}</strong> à <strong>{selectedTime}</strong>.
         </p>
         <p className="mt-2 text-sm text-gray-600 max-w-md mx-auto">
@@ -92,10 +162,14 @@ export default function RdvFlow({ servicePreset }: { servicePreset?: string }) {
       {/* ÉTAPE 1 — Prestation */}
       {step === 1 && (
         <div className="bg-white border border-gray-100 p-6 md:p-8 mt-8">
-          <h2 className="font-serif text-xl text-brand mb-1">Quelle prestation ?</h2>
-          <p className="text-sm text-gray-500 mb-6">Choisissez ce dont vous avez besoin.</p>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-xl" aria-hidden="true">{cfg.icon}</span>
+            <h2 className="font-serif text-xl text-brand">Quelle prestation ?</h2>
+          </div>
+          <p className="text-sm text-gray-500 mb-6">Calendrier dédié à l'atelier <strong>{cfg.shortLabel.toLowerCase()}</strong>.</p>
+
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {SERVICES.map((s) => {
+            {cfg.services.map((s) => {
               const isSelected = service === s.id;
               return (
                 <button
@@ -127,11 +201,10 @@ export default function RdvFlow({ servicePreset }: { servicePreset?: string }) {
             </div>
           )}
 
-          {/* Encart info pour la carrosserie */}
-          {service === "carrosserie" && (
+          {section === "carrosserie" && service === "sinistre" && (
             <div className="mt-6 bg-brand-accent/5 border-l-2 border-brand-accent p-4 text-sm text-gray-700">
               <strong>Vous êtes assuré AXA ou Direct Assurance ?</strong> Nous sommes agréés —
-              nous gérons l'expertise, la déclaration et les réparations.
+              nous gérons l'expertise, la déclaration et les réparations de A à Z.
             </div>
           )}
 
@@ -150,17 +223,18 @@ export default function RdvFlow({ servicePreset }: { servicePreset?: string }) {
       {/* ÉTAPE 2 — Calendrier */}
       {step === 2 && (
         <div className="bg-white border border-gray-100 p-6 md:p-8 mt-8">
-          <h2 className="font-serif text-xl text-brand mb-1">Choisissez votre créneau</h2>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-xl" aria-hidden="true">{cfg.icon}</span>
+            <h2 className="font-serif text-xl text-brand">Choisissez votre créneau</h2>
+          </div>
           <p className="text-sm text-gray-500 mb-6">
-            Sélectionnez d'abord un jour, puis une heure parmi les créneaux disponibles.
+            Créneaux du planning <strong>{cfg.shortLabel.toLowerCase()}</strong>, lundi → vendredi, 9h–12h / 14h–18h.
           </p>
 
-          {/* En-tête calendrier */}
           <div className="text-xs tracking-[0.3em] uppercase text-brand-accent mb-3">
             {humanRangeLabel(days)}
           </div>
 
-          {/* Grille des jours */}
           <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-7 gap-2">
             {days.map((d) => {
               const isSelected = d.iso === selectedDayIso;
@@ -194,19 +268,13 @@ export default function RdvFlow({ servicePreset }: { servicePreset?: string }) {
                     </div>
                   )}
                   {isClosed && (
-                    <div className="text-[9px] tracking-wider mt-1 text-gray-300">fermé</div>
-                  )}
-                  {d.isToday && (
-                    <div className={`text-[9px] mt-0.5 ${isSelected ? "text-white" : "text-brand"}`}>
-                      · aujourd'hui
-                    </div>
+                    <div className="text-[9px] tracking-wider mt-1 text-gray-300">complet</div>
                   )}
                 </button>
               );
             })}
           </div>
 
-          {/* Créneaux du jour sélectionné */}
           <div className="mt-8">
             {!selectedDay && (
               <div className="text-center text-sm text-gray-500 py-8 border-2 border-dashed border-gray-200">
@@ -219,7 +287,7 @@ export default function RdvFlow({ servicePreset }: { servicePreset?: string }) {
                   Créneaux du {selectedDay.label}
                 </div>
                 {selectedDay.times.length === 0 ? (
-                  <div className="text-sm text-gray-500">Fermé ce jour.</div>
+                  <div className="text-sm text-gray-500">Complet ce jour.</div>
                 ) : (
                   <div className="space-y-4">
                     <SlotGroup
@@ -266,11 +334,11 @@ export default function RdvFlow({ servicePreset }: { servicePreset?: string }) {
             Vous allez recevoir une confirmation par email et SMS, puis un rappel la veille.
           </p>
 
-          {/* Récap */}
           <div className="bg-gray-50 border-l-2 border-brand-accent p-4 mb-6 text-sm">
-            <div className="font-medium text-brand">
-              {SERVICES.find((s) => s.id === service)?.label}
+            <div className="text-[10px] tracking-[0.3em] uppercase text-brand-accent mb-1">
+              {cfg.label}
             </div>
+            <div className="font-medium text-brand">{selectedService?.label}</div>
             <div className="text-gray-600 mt-1">
               {selectedDay?.label} · {selectedTime}
             </div>
@@ -307,15 +375,9 @@ export default function RdvFlow({ servicePreset }: { servicePreset?: string }) {
 }
 
 function SlotGroup({
-  title,
-  times,
-  selected,
-  onSelect
+  title, times, selected, onSelect
 }: {
-  title: string;
-  times: string[];
-  selected: string | null;
-  onSelect: (t: string) => void;
+  title: string; times: string[]; selected: string | null; onSelect: (t: string) => void;
 }) {
   if (times.length === 0) return null;
   return (
@@ -385,8 +447,12 @@ function Field({
   );
 }
 
-// Génère 14 jours à partir de demain (en excluant les dimanches)
-function generateDays(nb: number): DaySlot[] {
+/**
+ * Génère N jours à venir (lundi → vendredi, sans samedi/dimanche).
+ * Pour rendre les calendriers visuellement DIFFÉRENTS entre les ateliers,
+ * on enlève quelques créneaux de manière déterministe selon la section.
+ */
+function generateDays(nb: number, section: SectionId): DaySlot[] {
   const out: DaySlot[] = [];
   const todayMs = new Date();
   todayMs.setHours(0, 0, 0, 0);
@@ -394,18 +460,22 @@ function generateDays(nb: number): DaySlot[] {
   while (out.length < nb && i < 30) {
     const d = new Date(todayMs.getTime() + i * 86400000);
     const dayIdx = d.getDay();
-    if (dayIdx === 0) { i++; continue; } // dimanche fermé
-    const isSat = dayIdx === 6;
-    const times = isSat
-      ? ["09:00", "10:00", "11:00"]
-      : ["08:30", "09:30", "10:30", "11:30", "14:00", "15:00", "16:00", "17:00"];
+    if (dayIdx === 0 || dayIdx === 6) { i++; continue; } // week-end fermé
+
+    // Plage 9h-12h / 14h-18h, créneaux d'une heure
+    let times = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
+
+    // Indispos simulées par section pour montrer que les calendriers sont distincts
+    const seed = sectionSeed(section) + i;
+    times = times.filter((_, idx) => (seed * (idx + 1)) % 7 !== 0);
+
     out.push({
       date: d,
       iso: d.toISOString().slice(0, 10),
       label: new Intl.DateTimeFormat("fr-FR", {
         weekday: "long", day: "numeric", month: "long"
       }).format(d),
-      dayShort: JOURS_SHORT[(dayIdx + 6) % 7],
+      dayShort: JOURS_SHORT[(dayIdx + 6) % 7] ?? "",
       dayNum: d.getDate(),
       monthShort: MOIS[d.getMonth()].slice(0, 4),
       times,
@@ -416,13 +486,17 @@ function generateDays(nb: number): DaySlot[] {
   return out;
 }
 
+function sectionSeed(s: SectionId): number {
+  if (s === "mecanique") return 3;
+  if (s === "carrosserie") return 5;
+  return 7;
+}
+
 function humanRangeLabel(days: DaySlot[]): string {
   if (days.length === 0) return "";
   const first = days[0].date;
   const last = days[days.length - 1].date;
-  const sameMonth = first.getMonth() === last.getMonth();
-  if (sameMonth) {
-    return `${MOIS[first.getMonth()]} ${first.getFullYear()}`;
-  }
-  return `${MOIS[first.getMonth()]} – ${MOIS[last.getMonth()]} ${last.getFullYear()}`;
+  return first.getMonth() === last.getMonth()
+    ? `${MOIS[first.getMonth()]} ${first.getFullYear()}`
+    : `${MOIS[first.getMonth()]} – ${MOIS[last.getMonth()]} ${last.getFullYear()}`;
 }

@@ -1,64 +1,72 @@
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
+import DecrirePanneForm from "./DecrirePanneForm";
 
 export const metadata = {
   title: "Atelier — mécanique, carrosserie, contrôle technique",
   description:
-    "Services atelier AVR Automobile à Couëron : mécanique, carrosserie, contrôle technique. Agréé AXA et Direct Assurance."
+    "Atelier AVR Automobile à Couëron : mécanique toutes marques, carrosserie agréée AXA et Direct Assurance, contrôle technique. Prise de rendez-vous en ligne."
 };
 
 export default function AtelierPage() {
   return (
     <>
-      {/* Hero atelier */}
+      {/* HERO atelier — 3 services présentés brièvement */}
       <section className="relative bg-brand-dark text-white overflow-hidden">
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-30"
-          style={{ backgroundImage: "url(https://picsum.photos/seed/atelier-hero/1920/800)" }}
+          className="absolute inset-0 bg-cover bg-center opacity-25"
+          style={{ backgroundImage: "url(https://picsum.photos/seed/atelier-hero/1920/900)" }}
         />
-        <div className="relative container-x py-24 md:py-32 text-center hero-text">
+        <div className="relative container-x py-20 md:py-24 text-center hero-text">
           <div
             className="text-xs md:text-sm tracking-[0.4em] text-brand-accent uppercase hero-anim hero-accent"
             style={{ animationDelay: "150ms" }}
           >
-            Notre atelier · Couëron
+            Atelier · Couëron
           </div>
           <h1
-            className="mt-6 font-serif text-4xl md:text-6xl lg:text-7xl leading-tight hero-title hero-anim hero-anim-title"
+            className="mt-4 font-serif text-4xl md:text-6xl leading-tight hero-title hero-anim hero-anim-title"
             style={{ animationDelay: "350ms" }}
           >
             L'atelier AVR
           </h1>
           <p
-            className="mt-6 max-w-2xl mx-auto text-base md:text-lg text-white/90 hero-anim"
-            style={{ animationDelay: "900ms" }}
+            className="mt-6 max-w-2xl mx-auto text-base md:text-lg text-white/85 hero-anim"
+            style={{ animationDelay: "850ms" }}
           >
-            Mécanique, carrosserie, contrôle technique : tout sous un même toit, par une équipe
-            qui connaît votre véhicule.
+            Trois expertises, un seul atelier de confiance.
           </p>
+
+          {/* 3 mini-présentations */}
           <div
-            className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 hero-anim"
-            style={{ animationDelay: "1150ms" }}
+            className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto text-left hero-anim"
+            style={{ animationDelay: "1050ms" }}
           >
-            <Link
-              href="/atelier/rdv"
-              className="inline-flex items-center justify-center h-14 w-[260px] bg-brand-accent text-white text-sm tracking-[0.2em] uppercase hover:brightness-110 transition"
-            >
-              Prendre rendez-vous
-            </Link>
-            <a
-              href="tel:0240862102"
-              className="inline-flex items-center justify-center h-14 w-[260px] border border-white/80 text-white text-sm tracking-[0.2em] uppercase hover:bg-white hover:text-brand transition"
-            >
-              02 40 86 21 02
-            </a>
+            <MiniIntro
+              href="#carrosserie"
+              icon="🎨"
+              label="Carrosserie"
+              desc="Sinistre, peinture, redressage. Agréé AXA et Direct Assurance."
+            />
+            <MiniIntro
+              href="#mecanique"
+              icon="🔧"
+              label="Mécanique"
+              desc="Toutes marques : révision, freins, distribution, diagnostic…"
+            />
+            <MiniIntro
+              href="#controle-technique"
+              icon="📋"
+              label="Contrôle technique"
+              desc="Centre agréé. Périodique ou contre-visite, sous 1 heure."
+            />
           </div>
         </div>
       </section>
 
       {/* Bandeau réassurance assurances */}
       <section className="bg-white border-b border-gray-100">
-        <div className="container-x py-6 flex flex-wrap items-center justify-center gap-x-10 gap-y-3 text-sm text-gray-700">
+        <div className="container-x py-5 flex flex-wrap items-center justify-center gap-x-10 gap-y-3 text-sm text-gray-700">
           <div className="flex items-center gap-2">
             <span className="text-brand-accent">✓</span>
             Agréé <strong className="font-semibold">AXA</strong>
@@ -76,179 +84,239 @@ export default function AtelierPage() {
         </div>
       </section>
 
-      {/* 3 services */}
-      <section className="container-x py-20">
-        <Reveal>
-          <div className="text-center max-w-2xl mx-auto">
-            <div className="text-xs tracking-[0.4em] text-brand-accent uppercase">Nos services</div>
-            <h2 className="mt-2 text-3xl md:text-4xl font-serif text-brand">
-              Tout ce qu'il faut pour votre véhicule
-            </h2>
-            <p className="mt-4 text-gray-600">
-              Devis clair avant intervention, factures détaillées, pièces neuves d'origine ou
-              équivalentes. Sur toutes marques.
-            </p>
-          </div>
-        </Reveal>
+      {/* SECTION 1 — CARROSSERIE (image gauche / texte droite) */}
+      <SectionBlock
+        id="carrosserie"
+        bg="bg-gray-50"
+        surtitre="Atelier · Carrosserie"
+        titre="On remet votre carrosserie à neuf."
+        image="https://picsum.photos/seed/carrosserie-bloc/1200/900"
+        imageAlt="Atelier carrosserie"
+        imagePosition="left"
+        rdvHref="/atelier/carrosserie/rdv"
+        rdvLabel="Prendre RDV carrosserie"
+      >
+        <p>
+          Choc, rayure, accrochage, grêle ou sinistre complet :
+          notre équipe de carrossiers prend en charge la remise en état totale de
+          votre véhicule, avec ou sans assurance.
+        </p>
+        <p className="mt-3">
+          Nous sommes <strong>agréés AXA et Direct Assurance</strong> — si c'est
+          votre assureur, nous gérons l'expertise, la déclaration et les
+          réparations de A à Z. Vous nous laissez les clés, on s'occupe du reste.
+        </p>
 
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-          <Reveal delay={0} className="h-full">
-            <ServiceBlock
-              title="Mécanique"
-              href="/atelier/mecanique"
-              image="https://picsum.photos/seed/meca/800/600"
-              tags={["Révision", "Freinage", "Vidange", "Embrayage", "Diagnostic"]}
-              desc="Entretien courant et grosse mécanique sur toutes marques."
-            />
-          </Reveal>
-          <Reveal delay={150} className="h-full">
-            <ServiceBlock
-              title="Carrosserie"
-              href="/atelier/carrosserie"
-              image="https://picsum.photos/seed/carrosserie/800/600"
-              tags={["Sinistre", "Peinture", "Redressage", "Plastique"]}
-              desc="Prise en charge complète des sinistres, expertise sur place."
-            />
-          </Reveal>
-          <Reveal delay={300} className="h-full">
-            <ServiceBlock
-              title="Contrôle technique"
-              href="/atelier/controle-technique"
-              image="https://picsum.photos/seed/ct/800/600"
-              tags={["Périodique", "Contre-visite"]}
-              desc="Contrôle technique sur rendez-vous, résultat en moins d'une heure."
-            />
-          </Reveal>
-        </div>
-      </section>
-
-      {/* Pourquoi choisir AVR pour l'atelier */}
-      <section className="bg-gray-50 py-20">
-        <div className="container-x">
-          <Reveal>
-            <div className="text-center max-w-2xl mx-auto mb-12">
-              <div className="text-xs tracking-[0.4em] text-brand-accent uppercase">Pourquoi AVR</div>
-              <h2 className="mt-2 text-3xl md:text-4xl font-serif text-brand">
-                4 bonnes raisons de nous confier votre véhicule
-              </h2>
-            </div>
-          </Reveal>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { num: "01", title: "Équipe d'expérience", desc: "Plus de 25 ans à entretenir les véhicules de la région." },
-              { num: "02", title: "Devis transparent", desc: "Aucune intervention sans votre accord, factures détaillées." },
-              { num: "03", title: "Sinistre simplifié", desc: "Agréés AXA et Direct Assurance, nous gérons votre dossier." },
-              { num: "04", title: "Multimarque", desc: "Toutes marques, toutes énergies, anciens véhicules acceptés." }
-            ].map((b, i) => (
-              <Reveal key={b.num} delay={i * 100}>
-                <div className="bg-white p-6 h-full border-t-2 border-brand-accent">
-                  <div className="text-3xl font-serif text-brand-accent">{b.num}</div>
-                  <div className="mt-4 font-serif text-xl text-brand">{b.title}</div>
-                  <p className="mt-2 text-sm text-gray-600">{b.desc}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Avis spécifiques atelier */}
-      <section className="bg-brand-dark text-white py-20">
-        <Reveal>
-          <div className="container-x text-center max-w-2xl mx-auto mb-10">
-            <div className="text-xs tracking-[0.4em] text-brand-accent uppercase">Témoignages</div>
-            <h2 className="mt-2 text-3xl md:text-4xl font-serif">Ils ont passé l'atelier en revue</h2>
-          </div>
-        </Reveal>
-        <div className="container-x grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="mt-6 grid grid-cols-2 gap-2 text-sm">
           {[
-            { name: "Julien M.", text: "Devis clair, intervention rapide. Pas de mauvaise surprise." },
-            { name: "Anaïs P.", text: "Pris en charge sinistre via mon assurance, tout a été géré pour moi." },
-            { name: "Patrick V.", text: "Contrôle technique au top, équipe sympa et professionnelle." }
-          ].map((r, i) => (
-            <Reveal key={r.name} delay={i * 120}>
-              <div className="bg-white/5 border border-white/10 p-6 h-full">
-                <div className="text-brand-accent">★★★★★</div>
-                <p className="mt-3 text-sm text-gray-100 leading-relaxed">"{r.text}"</p>
-                <div className="mt-4 text-xs tracking-widest uppercase text-gray-400">— {r.name}</div>
-              </div>
-            </Reveal>
+            "Sinistre auto",
+            "Peinture",
+            "Redressage / tôlerie",
+            "Smart Repair",
+            "Pare-chocs / plastique",
+            "Polish & rénovation"
+          ].map((p) => (
+            <div key={p} className="flex items-center gap-2">
+              <span className="text-brand-accent">✓</span>
+              <span className="text-gray-700">{p}</span>
+            </div>
           ))}
         </div>
-      </section>
+      </SectionBlock>
 
-      {/* CTA bas de page */}
-      <section className="container-x py-20 text-center">
-        <Reveal>
-          <div className="text-xs tracking-[0.4em] text-brand-accent uppercase">Prêt ?</div>
-          <h2 className="mt-2 text-3xl md:text-4xl font-serif text-brand">
-            Réservez votre créneau en 3 clics
-          </h2>
-          <p className="mt-4 text-gray-600 max-w-xl mx-auto">
-            Choisissez votre prestation, votre créneau et laissez-nous vos coordonnées. Confirmation
-            immédiate par email et SMS.
+      {/* SECTION 2 — MÉCANIQUE (image droite / texte gauche) avec "décrivez votre panne" */}
+      <SectionBlock
+        id="mecanique"
+        bg="bg-white"
+        surtitre="Atelier · Mécanique"
+        titre="Toutes interventions, toutes marques."
+        image="https://picsum.photos/seed/mecanique-bloc/1200/900"
+        imageAlt="Atelier mécanique"
+        imagePosition="right"
+        rdvHref="/atelier/mecanique/rdv"
+        rdvLabel="Prendre RDV mécanique"
+      >
+        <p>
+          Entretien courant ou grosse mécanique : nous travaillons sur tous les
+          modèles, anciens comme récents, essence, diesel, hybride et électrique.
+        </p>
+        <p className="mt-3">
+          <strong>Devis clair avant intervention</strong>, factures détaillées,
+          pièces neuves d'origine ou équivalentes. Pas de mauvaise surprise.
+        </p>
+
+        <div className="mt-6 grid grid-cols-2 gap-2 text-sm">
+          {[
+            "Révision / Vidange",
+            "Freinage",
+            "Distribution",
+            "Suspension",
+            "Échappement",
+            "Climatisation",
+            "Batterie",
+            "Pneus",
+            "Vitrage",
+            "Diagnostic"
+          ].map((p) => (
+            <div key={p} className="flex items-center gap-2">
+              <span className="text-brand-accent">✓</span>
+              <span className="text-gray-700">{p}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Bloc "Décrivez votre panne" — exclusif à la mécanique */}
+        <div className="mt-8 bg-gray-50 border-l-2 border-brand-accent p-5">
+          <div className="text-[10px] tracking-[0.3em] uppercase text-brand-accent">
+            Pas sûr de la panne ?
+          </div>
+          <div className="mt-1 font-serif text-lg text-brand">
+            Décrivez-nous ce que vous observez
+          </div>
+          <p className="mt-2 text-sm text-gray-600">
+            Bruit suspect, voyant allumé, fumée, comportement bizarre… On
+            diagnostique pour vous.
           </p>
-          <Link
-            href="/atelier/rdv"
-            className="mt-8 inline-flex items-center justify-center px-10 py-4 bg-brand-accent text-white text-sm tracking-[0.2em] uppercase hover:brightness-110 transition"
-          >
-            Prendre rendez-vous
-          </Link>
-        </Reveal>
+          <DecrirePanneForm />
+        </div>
+      </SectionBlock>
+
+      {/* SECTION 3 — CONTRÔLE TECHNIQUE (image gauche / texte droite) */}
+      <SectionBlock
+        id="controle-technique"
+        bg="bg-gray-50"
+        surtitre="Atelier · Contrôle technique"
+        titre="Contrôle technique sur rendez-vous."
+        image="https://picsum.photos/seed/ct-bloc/1200/900"
+        imageAlt="Contrôle technique"
+        imagePosition="left"
+        rdvHref="/atelier/controle-technique/rdv"
+        rdvLabel="Prendre RDV CT"
+      >
+        <p>
+          Contrôle technique périodique (obligatoire tous les 2 ans à partir du
+          4ᵉ anniversaire du véhicule) et contre-visite après réparation.
+        </p>
+        <p className="mt-3">
+          <strong>Résultat remis en moins d'une heure</strong>, en main propre.
+          Rapport détaillé et explication des points contrôlés.
+        </p>
+
+        <div className="mt-6 grid grid-cols-2 gap-2 text-sm">
+          {[
+            "Contrôle périodique",
+            "Contre-visite",
+            "133 points vérifiés",
+            "Rapport remis sur place"
+          ].map((p) => (
+            <div key={p} className="flex items-center gap-2">
+              <span className="text-brand-accent">✓</span>
+              <span className="text-gray-700">{p}</span>
+            </div>
+          ))}
+        </div>
+      </SectionBlock>
+
+      {/* Bandeau horaires */}
+      <section className="bg-brand-dark text-white py-12">
+        <div className="container-x text-center">
+          <Reveal>
+            <div className="text-xs tracking-[0.4em] uppercase text-brand-accent">Horaires atelier</div>
+            <div className="mt-3 text-2xl md:text-3xl font-serif">
+              Lundi – Vendredi · 9h–12h / 14h–18h
+            </div>
+            <div className="mt-1 text-sm text-white/60">Fermé le week-end</div>
+            <div className="mt-6">
+              <a
+                href="tel:0240862102"
+                className="inline-flex items-center justify-center h-12 px-8 border border-white/80 text-white text-xs tracking-[0.2em] uppercase hover:bg-white hover:text-brand transition"
+              >
+                02 40 86 21 02
+              </a>
+            </div>
+          </Reveal>
+        </div>
       </section>
     </>
   );
 }
 
-function ServiceBlock({
-  title,
+function MiniIntro({
   href,
-  tags,
-  desc,
-  image
+  icon,
+  label,
+  desc
 }: {
-  title: string;
   href: string;
-  tags: string[];
+  icon: string;
+  label: string;
   desc: string;
-  image: string;
 }) {
   return (
-    <Link
+    <a
       href={href}
-      className="group h-full flex flex-col bg-white overflow-hidden border border-gray-100 hover:border-brand-accent transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-12px_rgba(255,0,0,0.20)]"
+      className="group block bg-white/5 border border-white/10 hover:border-brand-accent backdrop-blur p-5 transition-all"
     >
-      {/* Image */}
-      <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={image}
-          alt={title}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-        <div className="absolute bottom-4 left-5">
-          <div className="text-2xl font-serif text-white">{title}</div>
-        </div>
-        {/* Liseré rouge animé */}
-        <div className="absolute top-0 left-0 right-0 h-[3px] bg-brand-accent origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+      <div className="text-3xl">{icon}</div>
+      <div className="mt-3 font-serif text-lg text-white">{label}</div>
+      <p className="mt-1 text-xs text-white/70 leading-relaxed">{desc}</p>
+      <div className="mt-3 text-[10px] tracking-[0.3em] uppercase text-brand-accent opacity-0 group-hover:opacity-100 transition">
+        En savoir + ↓
       </div>
+    </a>
+  );
+}
 
-      <div className="p-5 flex flex-col flex-1">
-        <p className="text-sm text-gray-600">{desc}</p>
-        <div className="mt-4 flex flex-wrap gap-2">
-          {tags.map((t) => (
-            <span key={t} className="text-[10px] tracking-widest uppercase bg-gray-50 border border-gray-200 px-2 py-1 text-gray-700">
-              {t}
-            </span>
-          ))}
-        </div>
-        {/* "En savoir plus" toujours collé en bas */}
-        <div className="mt-auto pt-5 text-xs tracking-[0.25em] uppercase text-brand-accent">
-          En savoir plus →
-        </div>
+function SectionBlock({
+  id,
+  bg,
+  surtitre,
+  titre,
+  image,
+  imageAlt,
+  imagePosition,
+  rdvHref,
+  rdvLabel,
+  children
+}: {
+  id: string;
+  bg: string;
+  surtitre: string;
+  titre: string;
+  image: string;
+  imageAlt: string;
+  imagePosition: "left" | "right";
+  rdvHref: string;
+  rdvLabel: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section id={id} className={`${bg} scroll-mt-32 py-20`}>
+      <div className="container-x grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+        {/* Image */}
+        <Reveal variant={imagePosition === "left" ? "left" : "right"} className={imagePosition === "right" ? "lg:order-2" : ""}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={image} alt={imageAlt} className="w-full aspect-[4/3] object-cover" />
+        </Reveal>
+
+        {/* Texte */}
+        <Reveal variant={imagePosition === "left" ? "right" : "left"} className={imagePosition === "right" ? "lg:order-1" : ""}>
+          <div>
+            <div className="text-xs tracking-[0.4em] uppercase text-brand-accent">{surtitre}</div>
+            <h2 className="mt-3 text-3xl md:text-4xl font-serif text-brand leading-tight">{titre}</h2>
+            <div className="mt-6 text-gray-700 leading-relaxed">{children}</div>
+
+            <div className="mt-8">
+              <Link
+                href={rdvHref}
+                className="inline-flex items-center justify-center h-14 px-8 bg-brand-accent text-white text-sm tracking-[0.2em] uppercase hover:brightness-110 transition"
+              >
+                {rdvLabel} →
+              </Link>
+            </div>
+          </div>
+        </Reveal>
       </div>
-    </Link>
+    </section>
   );
 }

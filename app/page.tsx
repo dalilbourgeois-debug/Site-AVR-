@@ -1,9 +1,7 @@
 import Link from "next/link";
-import VehiculeCard from "@/components/VehiculeCard";
 import Reveal from "@/components/Reveal";
 import Partners from "@/components/Partners";
 import CountUp from "@/components/CountUp";
-import { getVehicules } from "@/lib/data";
 
 const AVIS = [
   { name: "Marie L.",   note: 5, text: "Équipe pro et sympa, voiture impeccable à la livraison." },
@@ -17,87 +15,161 @@ const AVIS = [
 ];
 
 export default function HomePage() {
-  const tous = getVehicules();
-  const alaune = tous.filter((v) => v.alaune).slice(0, 6);
-  const enStock = tous.length;
-
   return (
     <>
-      {/* HERO — sous le bandeau de nav */}
+      {/* HERO SPLIT — 2 panneaux : VOIR LE PARC | ATELIER */}
       <section
         id="hero"
-        className="relative w-full flex items-center justify-center text-white"
+        className="relative w-full text-white overflow-hidden"
         style={{ minHeight: "calc(100vh - 5rem)" }}
       >
-        {/* Image de fond */}
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage:
-              "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.35) 40%, rgba(0,0,0,0.75) 100%), url(/images/AVR%20image%20hero.avif)"
-          }}
-        />
-
-        {/* Contenu centré */}
-        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto py-16 pb-32 hero-text">
+        {/* Version desktop : split diagonal */}
+        <div className="hidden md:block absolute inset-0">
+          {/* MOITIÉ GAUCHE — Le parc */}
           <div
-            className="text-xs md:text-sm tracking-[0.4em] text-brand-accent uppercase hero-anim hero-accent"
-            style={{ animationDelay: "150ms" }}
+            className="absolute inset-0"
+            style={{ clipPath: "polygon(0 0, 55% 0, 45% 100%, 0 100%)" }}
           >
-            Garage multimarque · Couëron
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{
+                backgroundImage:
+                  "linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.55) 100%), url(/images/AVR%20image%20hero%202.jpg)"
+              }}
+            />
+            <div className="absolute inset-y-0 left-0 w-[45%] flex flex-col items-center justify-center text-center px-8 hero-text">
+              <div
+                className="text-xs md:text-sm tracking-[0.4em] text-brand-accent uppercase hero-anim hero-accent"
+                style={{ animationDelay: "150ms" }}
+              >
+                Concession · Couëron
+              </div>
+              <h2
+                className="mt-6 font-serif text-4xl lg:text-6xl xl:text-7xl leading-[1.05] tracking-tight hero-title hero-anim hero-anim-title"
+                style={{ animationDelay: "350ms" }}
+              >
+                LE PARC
+              </h2>
+              <p
+                className="mt-6 max-w-md text-sm lg:text-base text-white/90 hero-anim"
+                style={{ animationDelay: "900ms" }}
+              >
+                Plus de 70 véhicules d'occasion expertisés et garantis 6 mois.
+                Reprise possible de votre voiture actuelle.
+              </p>
+              <Link
+                href="/vehicules"
+                className="mt-8 inline-flex items-center justify-center h-14 w-[240px] bg-brand-accent text-white text-sm tracking-[0.2em] uppercase hover:brightness-110 transition hero-anim"
+                style={{ animationDelay: "1100ms" }}
+              >
+                Découvrir →
+              </Link>
+            </div>
           </div>
-          <h1
-            className="mt-6 font-serif text-5xl md:text-7xl lg:text-8xl leading-[1.05] tracking-tight hero-title hero-anim hero-anim-title"
-            style={{ animationDelay: "350ms" }}
-          >
-            AVR<br />AUTOMOBILE
-          </h1>
+
+          {/* MOITIÉ DROITE — Atelier */}
           <div
-            className="mt-6 text-sm md:text-base tracking-[0.25em] text-brand-accent uppercase hero-anim hero-accent"
-            style={{ animationDelay: "850ms" }}
+            className="absolute inset-0"
+            style={{ clipPath: "polygon(55% 0, 100% 0, 100% 100%, 45% 100%)" }}
           >
-            Achat · Vente · Reprise · Financement · Entretien
+            <div
+              className="absolute inset-0 bg-cover"
+              style={{
+                backgroundImage:
+                  "linear-gradient(to bottom, rgba(0,0,0,0.50) 0%, rgba(0,0,0,0.65) 100%), url(/images/image%20hero%203.avif)",
+                backgroundPosition: "10% center"
+              }}
+            />
+            <div className="absolute inset-y-0 right-0 w-[45%] flex flex-col items-center justify-center text-center px-8 hero-text">
+              <div
+                className="text-xs md:text-sm tracking-[0.4em] text-brand-accent uppercase hero-anim hero-accent"
+                style={{ animationDelay: "250ms" }}
+              >
+                Atelier · Couëron
+              </div>
+              <h2
+                className="mt-6 font-serif text-4xl lg:text-6xl xl:text-7xl leading-[1.05] tracking-tight hero-title hero-anim hero-anim-title"
+                style={{ animationDelay: "450ms" }}
+              >
+                L'ATELIER
+              </h2>
+              <p
+                className="mt-6 max-w-md text-sm lg:text-base text-white/90 hero-anim"
+                style={{ animationDelay: "1000ms" }}
+              >
+                Mécanique, carrosserie, contrôle technique.
+                Agréé AXA et Direct Assurance — sinistre pris en charge de A à Z.
+              </p>
+              <Link
+                href="/atelier"
+                className="mt-8 inline-flex items-center justify-center h-14 w-[240px] bg-brand-accent text-white text-sm tracking-[0.2em] uppercase hover:brightness-110 transition hero-anim"
+                style={{ animationDelay: "1200ms" }}
+              >
+                Prendre RDV →
+              </Link>
+            </div>
           </div>
 
-          <p
-            className="mt-8 max-w-xl mx-auto text-base md:text-lg text-white/90 hero-anim"
-            style={{ animationDelay: "1050ms" }}
-          >
-            Votre véhicule, du choix à l'entretien — tout sous un même toit, depuis plus de 20 ans.
-          </p>
-
-          {/* CTA centrés */}
-          <div
-            className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 hero-anim"
-            style={{ animationDelay: "1250ms" }}
-          >
-            <Link
-              href="/vehicules"
-              className="inline-flex items-center justify-center px-8 py-3.5 border border-white/80 text-white text-sm tracking-[0.2em] uppercase hover:bg-white hover:text-brand transition-colors w-[240px]"
-            >
-              Voir le parc
-            </Link>
-            <Link
-              href="/atelier/rdv"
-              className="inline-flex items-center justify-center px-8 py-3.5 bg-brand-accent text-brand font-medium text-sm tracking-[0.2em] uppercase hover:brightness-95 transition w-[240px]"
-            >
-              Prendre RDV
-            </Link>
+          {/* Ligne diagonale rouge subtile entre les deux panneaux */}
+          <div className="absolute inset-0 pointer-events-none">
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full">
+              <line x1="55" y1="0" x2="45" y2="100" stroke="#FF0000" strokeWidth="0.25" />
+            </svg>
           </div>
         </div>
 
-        {/* Flèche "scroll down" — sous les boutons, en bas du hero */}
-        <a
-          href="#suite"
-          aria-label="Voir la suite"
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-1 text-white/70 hover:text-brand-accent hero-anim"
-          style={{ animationDelay: "1600ms" }}
-        >
-          <span className="text-[10px] tracking-[0.4em] uppercase">Découvrir</span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="animate-bounce">
-            <path d="M6 9l6 6 6-6" />
-          </svg>
-        </a>
+        {/* Version mobile : panneaux empilés sans diagonal */}
+        <div className="md:hidden">
+          {/* Le parc */}
+          <div
+            className="relative h-[55vh] min-h-[420px] bg-cover bg-center flex flex-col items-center justify-center text-center px-6 hero-text"
+            style={{
+              backgroundImage:
+                "linear-gradient(to bottom, rgba(0,0,0,0.50) 0%, rgba(0,0,0,0.65) 100%), url(/images/AVR%20image%20hero%202.jpg)"
+            }}
+          >
+            <div className="text-[10px] tracking-[0.4em] text-brand-accent uppercase hero-anim hero-accent">
+              Concession · Couëron
+            </div>
+            <h2 className="mt-4 font-serif text-4xl leading-tight hero-title hero-anim hero-anim-title">
+              LE PARC
+            </h2>
+            <p className="mt-3 text-sm text-white/90 max-w-sm hero-anim">
+              70+ véhicules expertisés, garantis 6 mois.
+            </p>
+            <Link
+              href="/vehicules"
+              className="mt-5 inline-flex items-center justify-center h-12 w-[200px] bg-brand-accent text-white text-xs tracking-[0.2em] uppercase hover:brightness-110 transition"
+            >
+              Découvrir →
+            </Link>
+          </div>
+
+          {/* Atelier */}
+          <div
+            className="relative h-[55vh] min-h-[420px] bg-cover bg-center flex flex-col items-center justify-center text-center px-6 hero-text border-t-2 border-brand-accent"
+            style={{
+              backgroundImage:
+                "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.70) 100%), url(/images/image%20hero%203.avif)"
+            }}
+          >
+            <div className="text-[10px] tracking-[0.4em] text-brand-accent uppercase hero-anim hero-accent">
+              Atelier · Couëron
+            </div>
+            <h2 className="mt-4 font-serif text-4xl leading-tight hero-title hero-anim hero-anim-title">
+              L'ATELIER
+            </h2>
+            <p className="mt-3 text-sm text-white/90 max-w-sm hero-anim">
+              Mécanique · Carrosserie · CT — Agréé AXA, Direct Assurance.
+            </p>
+            <Link
+              href="/atelier"
+              className="mt-5 inline-flex items-center justify-center h-12 w-[200px] bg-brand-accent text-white text-xs tracking-[0.2em] uppercase hover:brightness-110 transition"
+            >
+              Prendre RDV →
+            </Link>
+          </div>
+        </div>
       </section>
 
       {/* Ancrage */}
@@ -132,97 +204,91 @@ export default function HomePage() {
       {/* Partenaires assurances */}
       <Partners />
 
-      {/* À la une */}
-      <section className="container-x py-16">
-        <Reveal>
-          <div className="flex items-end justify-between mb-8 flex-wrap gap-4">
+      {/* LE GARAGE — Notre histoire + équipe */}
+      <section className="container-x py-20">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_1.1fr] gap-12 items-center">
+          <Reveal variant="left">
             <div>
-              <div className="text-xs tracking-[0.4em] text-brand-accent uppercase">Sélection</div>
-              <h2 className="mt-2 text-3xl md:text-4xl font-serif text-brand">Véhicules à la une</h2>
+              <div className="text-xs tracking-[0.4em] text-brand-accent uppercase">Le garage</div>
+              <h2 className="mt-2 text-3xl md:text-4xl font-serif text-brand">Notre histoire</h2>
+              <p className="mt-6 text-gray-700 leading-relaxed">
+                AVR Automobile est né de la passion de l'auto et du goût du travail bien fait.
+                Depuis nos premières années à Couëron, nous accompagnons des centaines de clients
+                chaque année — choix d'un véhicule d'occasion, entretien régulier, sinistre,
+                contrôle technique.
+              </p>
+              <p className="mt-4 text-gray-700 leading-relaxed">
+                Notre force : être à la fois <strong>vendeur et atelier</strong>, donc capables de
+                garantir ce que nous vendons.
+              </p>
+
+              <div className="mt-8 pt-6 border-t border-gray-200">
+                <div className="text-xs tracking-[0.4em] text-brand-accent uppercase">L'équipe</div>
+                <p className="mt-2 text-gray-700">
+                  Une dizaine de personnes au quotidien : commerciaux, mécaniciens, carrossiers,
+                  contrôleur technique. Tous formés, tous passionnés, tous à votre écoute.
+                </p>
+              </div>
             </div>
-            <Link href="/vehicules" className="text-sm tracking-widest uppercase text-brand hover:text-brand-accent">
-              Voir tout le parc →
-            </Link>
-          </div>
-        </Reveal>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {alaune.map((v, i) => (
-            <Reveal key={v.id} delay={i * 100}>
-              <VehiculeCard v={v} />
-            </Reveal>
-          ))}
+          </Reveal>
+          <Reveal variant="right">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://picsum.photos/seed/avr-equipe/1200/900"
+              alt="L'équipe AVR Automobile"
+              className="w-full h-auto shadow-md"
+            />
+          </Reveal>
         </div>
       </section>
 
-      {/* Services */}
-      <section className="bg-gray-50 py-16">
-        <div className="container-x text-center">
+      {/* NOUS TROUVER — adresse + carte */}
+      <section className="bg-gray-50 py-20">
+        <div className="container-x">
           <Reveal>
-            <div className="text-xs tracking-[0.4em] text-brand-accent uppercase">Atelier</div>
-            <h2 className="mt-2 text-3xl md:text-4xl font-serif text-brand">Toutes les prestations</h2>
-          </Reveal>
-          <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Reveal delay={0}>
-              <ServiceCard
-                title="Mécanique"
-                desc="Révision, vidange, freinage, embrayage, diagnostic. Agréé AXA et Direct Assurance."
-                href="/atelier/mecanique"
-              />
-            </Reveal>
-            <Reveal delay={150}>
-              <ServiceCard
-                title="Carrosserie"
-                desc="Sinistres, peinture, redressage. Prise en charge assurance AXA et Direct Assurance."
-                href="/atelier/carrosserie"
-              />
-            </Reveal>
-            <Reveal delay={300}>
-              <ServiceCard
-                title="Contrôle technique"
-                desc="Contrôle technique périodique et contre-visite, sur rendez-vous."
-                href="/atelier/controle-technique"
-              />
-            </Reveal>
-          </div>
-          <Reveal delay={450}>
-            <div className="mt-10">
-              <Link
-                href="/atelier/rdv"
-                className="inline-flex items-center justify-center px-8 py-3.5 bg-brand text-white text-sm tracking-[0.2em] uppercase hover:bg-brand-light transition"
-              >
-                Prendre rendez-vous
-              </Link>
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <div className="text-xs tracking-[0.4em] text-brand-accent uppercase">Visite</div>
+              <h2 className="mt-2 text-3xl md:text-4xl font-serif text-brand">Nous trouver</h2>
+              <p className="mt-3 text-gray-600">
+                Au 27 rue des Maraîchers à Couëron, à 5 minutes du centre de Nantes par le pont de Cheviré.
+              </p>
             </div>
           </Reveal>
-        </div>
-      </section>
 
-      {/* Reprise */}
-      <section className="container-x py-16 grid md:grid-cols-2 gap-10 items-center">
-        <Reveal variant="left">
-          <div>
-            <div className="text-xs tracking-[0.4em] text-brand-accent uppercase">Reprise & Achat</div>
-            <h2 className="mt-2 text-3xl md:text-4xl font-serif text-brand">Vous voulez vendre votre voiture ?</h2>
-            <p className="mt-4 text-gray-700">
-              Faites estimer votre véhicule gratuitement, en quelques clics. Reprise possible dans le cadre
-              d'un achat ou en rachat cash.
-            </p>
-            <Link
-              href="/vendre-reprendre"
-              className="mt-6 inline-flex items-center justify-center px-8 py-3.5 bg-brand text-white text-sm tracking-[0.2em] uppercase hover:bg-brand-light transition"
-            >
-              Estimer mon véhicule
-            </Link>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Reveal variant="left">
+              <div className="bg-white p-8 h-full">
+                <InfoRow label="Adresse">
+                  27 rue des Maraîchers<br />
+                  44220 Couëron
+                </InfoRow>
+                <InfoRow label="Téléphone">
+                  <a href="tel:0240862102" className="text-brand-accent hover:brightness-110">
+                    02 40 86 21 02
+                  </a>
+                </InfoRow>
+                <InfoRow label="Horaires">
+                  Lundi – Vendredi · 9h → 12h / 14h → 18h<br />
+                  Samedi · Fermé<br />
+                  Dimanche · Fermé
+                </InfoRow>
+                <InfoRow label="Transports" last>
+                  Bus ligne 93 — arrêt Maraîchers
+                </InfoRow>
+              </div>
+            </Reveal>
+            <Reveal variant="right">
+              <div className="overflow-hidden border bg-white aspect-[4/3] h-full">
+                <iframe
+                  title="Carte AVR Automobile"
+                  src="https://www.google.com/maps?q=27+rue+des+Maraichers+44220+Coueron&output=embed"
+                  className="w-full h-full"
+                  loading="lazy"
+                />
+              </div>
+            </Reveal>
           </div>
-        </Reveal>
-        <Reveal variant="right">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="https://picsum.photos/seed/reprise/900/600"
-            alt="Reprise"
-            className="rounded-sm shadow-md w-full h-auto"
-          />
-        </Reveal>
+        </div>
       </section>
 
       {/* Avis — défilement infini droite → gauche */}
@@ -256,13 +322,12 @@ function Stat({ children, label }: { children: React.ReactNode; label: string })
   );
 }
 
-function ServiceCard({ title, desc, href }: { title: string; desc: string; href: string }) {
+function InfoRow({ label, children, last }: { label: string; children: React.ReactNode; last?: boolean }) {
   return (
-    <Link href={href} className="card p-6 hover:shadow-md transition-shadow block text-left">
-      <div className="text-xl font-serif text-brand">{title}</div>
-      <p className="mt-2 text-gray-600 text-sm">{desc}</p>
-      <div className="mt-4 text-brand-accent text-xs tracking-[0.2em] uppercase font-medium">En savoir plus →</div>
-    </Link>
+    <div className={`py-4 ${last ? "" : "border-b border-gray-100"}`}>
+      <div className="text-[10px] tracking-[0.3em] uppercase text-gray-400 mb-1">{label}</div>
+      <div className="text-sm text-gray-800 leading-relaxed">{children}</div>
+    </div>
   );
 }
 

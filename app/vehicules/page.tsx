@@ -2,7 +2,6 @@ import Filters from "@/components/Filters";
 import VehiculeCard from "@/components/VehiculeCard";
 import Reveal from "@/components/Reveal";
 import { getVehicules } from "@/lib/data";
-import Link from "next/link";
 
 export const metadata = { title: "Nos véhicules d'occasion" };
 
@@ -44,36 +43,19 @@ export default async function VehiculesListPage({
 
   return (
     <>
-      {/* En-tête de page (style premium) */}
-      <section className="bg-brand-dark text-white py-12 border-b-2 border-brand-accent/60">
-        <div className="container-x text-center">
-          <Reveal>
+      <div className="container-x py-10">
+        <Reveal>
+          <div className="mb-8">
             <div className="text-xs tracking-[0.4em] text-brand-accent uppercase">Notre parc</div>
-            <h1 className="mt-2 text-4xl md:text-5xl font-serif">Véhicules d'occasion</h1>
-            <p className="mt-3 text-white/70 max-w-xl mx-auto">
+            <h1 className="mt-2 text-3xl md:text-4xl font-serif text-brand">
+              Véhicules d'occasion
+            </h1>
+            <p className="mt-2 text-gray-600">
               {liste.length} véhicule{liste.length > 1 ? "s" : ""} disponible{liste.length > 1 ? "s" : ""} —
               garantie 6 mois incluse, expertise mécanique avant livraison.
             </p>
-          </Reveal>
-          <Reveal delay={200}>
-            <div className="mt-6 flex items-center justify-center gap-6 text-xs tracking-[0.2em] uppercase">
-              <Link href="/vehicules/favoris" className="text-white/70 hover:text-brand-accent transition">
-                ♡ Mes favoris
-              </Link>
-              <span className="text-white/30">·</span>
-              <Link href="/vehicules/comparer" className="text-white/70 hover:text-brand-accent transition">
-                ⇄ Comparateur
-              </Link>
-              <span className="text-white/30">·</span>
-              <Link href="/vehicules/vendus" className="text-white/70 hover:text-brand-accent transition">
-                Vendus récemment
-              </Link>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      <div className="container-x py-10">
+          </div>
+        </Reveal>
         <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-10">
           <Filters marques={marques} energies={energies} />
           <div>

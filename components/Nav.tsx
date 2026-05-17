@@ -4,14 +4,22 @@ import Link from "next/link";
 import { useState } from "react";
 import { useFavorites } from "@/hooks/useStorageList";
 
-const links = [
+// Menu structuré en 2 univers
+const linksParc = [
   { href: "/vehicules", label: "Nos véhicules" },
-  { href: "/vehicules/favoris", label: "Mes favoris" },
   { href: "/vehicules/vendus", label: "Vendus récemment" },
-  { href: "/atelier", label: "Atelier" },
-  { href: "/atelier/rdv", label: "Prendre RDV" },
-  { href: "/vendre-reprendre", label: "Vendre / Reprendre" },
-  { href: "/garage", label: "Le garage" },
+  { href: "/vehicules/favoris", label: "Mes favoris" },
+  { href: "/vehicules/comparer", label: "Comparateur" },
+  { href: "/vendre-reprendre", label: "Vendre / Reprendre" }
+];
+const linksAtelier = [
+  { href: "/atelier", label: "Tous nos services" },
+  { href: "/atelier/mecanique", label: "Mécanique" },
+  { href: "/atelier/carrosserie", label: "Carrosserie" },
+  { href: "/atelier/controle-technique", label: "Contrôle technique" },
+  { href: "/atelier/rdv", label: "Prendre RDV" }
+];
+const linksDivers = [
   { href: "/contact", label: "Contact" }
 ];
 
@@ -38,9 +46,14 @@ export default function Nav() {
 
         {/* CENTRE : logo */}
         <div className="flex justify-center">
-          <Link href="/" className="text-center leading-none">
-            <div className="text-2xl md:text-3xl font-serif tracking-[0.3em] text-white">AVR</div>
-            <div className="text-[10px] md:text-xs tracking-[0.4em] text-white/70 mt-1">AUTOMOBILE</div>
+          <Link href="/" className="block" aria-label="AVR Automobile — Accueil">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/logo%20avr%201.png"
+              alt="AVR Automobile"
+              className="h-14 md:h-[68px] w-auto"
+              style={{ filter: "brightness(0) invert(1)" }}
+            />
           </Link>
         </div>
 
@@ -69,7 +82,7 @@ export default function Nav() {
               <circle cx="12" cy="8" r="4" />
               <path d="M4 21c0-4 4-7 8-7s8 3 8 7" />
             </svg>
-            <span className="hidden sm:inline text-xs tracking-[0.3em] uppercase">Créer un compte</span>
+            <span className="hidden sm:inline text-xs tracking-[0.3em] uppercase">Mon compte</span>
           </Link>
         </div>
       </div>
@@ -81,29 +94,78 @@ export default function Nav() {
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setOpen(false)}
           />
-          <aside className="absolute left-0 top-0 h-full w-full sm:w-96 bg-brand-dark text-white shadow-2xl overflow-y-auto">
+          <aside className="absolute left-0 top-0 h-full w-full sm:w-[480px] bg-brand-dark text-white shadow-2xl overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-white/10">
               <div className="text-xs tracking-[0.4em] text-white/60">MENU</div>
               <button onClick={() => setOpen(false)} aria-label="Fermer" className="text-2xl hover:text-brand-accent">
                 ✕
               </button>
             </div>
-            <nav className="px-6 py-6 space-y-1">
-              {links.map((l) => (
-                <Link
-                  key={l.href}
-                  href={l.href}
-                  onClick={() => setOpen(false)}
-                  className="block py-3 text-lg font-serif border-b border-white/5 hover:text-brand-accent transition-colors"
-                >
-                  {l.label}
-                </Link>
-              ))}
-            </nav>
+
+            <div className="px-6 py-6 space-y-8">
+              {/* Univers 1 — LE PARC */}
+              <section>
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="text-2xl">🚗</span>
+                  <div className="text-[10px] tracking-[0.4em] text-brand-accent uppercase">Le parc</div>
+                </div>
+                <nav className="space-y-0.5 pl-1 border-l-2 border-brand-accent/40">
+                  {linksParc.map((l) => (
+                    <Link
+                      key={l.href}
+                      href={l.href}
+                      onClick={() => setOpen(false)}
+                      className="block pl-4 py-2.5 text-base font-serif hover:text-brand-accent transition-colors"
+                    >
+                      {l.label}
+                    </Link>
+                  ))}
+                </nav>
+              </section>
+
+              {/* Univers 2 — ATELIER */}
+              <section>
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="text-2xl">🛠️</span>
+                  <div className="text-[10px] tracking-[0.4em] text-brand-accent uppercase">Atelier</div>
+                </div>
+                <nav className="space-y-0.5 pl-1 border-l-2 border-brand-accent/40">
+                  {linksAtelier.map((l) => (
+                    <Link
+                      key={l.href}
+                      href={l.href}
+                      onClick={() => setOpen(false)}
+                      className="block pl-4 py-2.5 text-base font-serif hover:text-brand-accent transition-colors"
+                    >
+                      {l.label}
+                    </Link>
+                  ))}
+                </nav>
+              </section>
+
+              {/* Divers */}
+              <section className="border-t border-white/10 pt-6">
+                <nav className="space-y-0.5">
+                  {linksDivers.map((l) => (
+                    <Link
+                      key={l.href}
+                      href={l.href}
+                      onClick={() => setOpen(false)}
+                      className="block py-2.5 text-sm tracking-widest uppercase text-white/70 hover:text-brand-accent transition-colors"
+                    >
+                      {l.label}
+                    </Link>
+                  ))}
+                </nav>
+              </section>
+            </div>
+
             <div className="px-6 py-6 border-t border-white/10 text-sm text-white/70 space-y-1">
               <div>27 rue des Maraîchers</div>
               <div>44220 Couëron</div>
-              <div className="text-brand-accent mt-2">02 40 86 21 02</div>
+              <a href="tel:0240862102" className="block text-brand-accent mt-2 hover:brightness-110">
+                02 40 86 21 02
+              </a>
             </div>
           </aside>
         </div>

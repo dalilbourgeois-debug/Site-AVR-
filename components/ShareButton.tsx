@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { showToast } from "@/lib/toast";
 
 export default function ShareButton({
   title,
@@ -63,6 +64,7 @@ export default function ShareButton({
     try {
       await navigator.clipboard.writeText(getUrl());
       setCopied(true);
+      showToast("Lien copié dans le presse-papier");
       setTimeout(() => setCopied(false), 2000);
     } catch {
       /* navigateur ancien : ignore */
