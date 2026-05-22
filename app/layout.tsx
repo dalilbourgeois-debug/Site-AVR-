@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import CompareBar from "@/components/CompareBar";
 import Toaster from "@/components/Toaster";
 import CallButton from "@/components/CallButton";
+import SignInModal from "@/components/SignInModal";
 
 export const metadata: Metadata = {
   title: { default: "AVR Automobile — Garage et véhicules d'occasion à Couëron", template: "%s · AVR Automobile" },
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="flex-1">{children}</main>
         <CompareBar />
         <CallButton />
+        <SignInModal />
         <Toaster />
         <Footer />
       </body>

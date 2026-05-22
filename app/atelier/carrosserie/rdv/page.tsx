@@ -1,4 +1,6 @@
+import { Suspense } from "react";
 import RdvFlow from "@/app/atelier/rdv/RdvFlow";
+import RequireAuth from "@/components/RequireAuth";
 
 export const metadata = { title: "Prendre RDV — Carrosserie" };
 
@@ -12,7 +14,14 @@ export default function Page() {
         contrôle technique. Agréé AXA et Direct Assurance pour les sinistres.
       </p>
       <div className="mt-8">
-        <RdvFlow section="carrosserie" />
+        <RequireAuth
+          title="Pour réserver un RDV carrosserie"
+          reason="Créez un compte pour qu'on puisse vous envoyer la confirmation et gérer le dossier sinistre avec votre assurance si nécessaire."
+        >
+          <Suspense fallback={<div className="text-sm text-gray-500">Chargement du calendrier...</div>}>
+            <RdvFlow section="carrosserie" />
+          </Suspense>
+        </RequireAuth>
       </div>
     </div>
   );

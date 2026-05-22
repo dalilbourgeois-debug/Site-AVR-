@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getVehiculeBySlug } from "@/lib/data";
 import { formatEur } from "@/lib/format";
 import ReservationFlow from "./ReservationFlow";
+import RequireAuth from "@/components/RequireAuth";
 
 export const metadata = { title: "Réserver ce véhicule" };
 
@@ -24,13 +25,20 @@ export default async function ReserverPage({
         de <strong>{formatEur(acompte)}</strong> (5% du prix) vous est demandé pour bloquer le véhicule.
       </p>
 
-      <ReservationFlow
-        slug={v.slug}
-        prix={v.prixTtc}
-        acompte={acompte}
-        titre={`${v.marque} ${v.modele} ${v.version}`}
-        photo={v.photos[0]}
-      />
+      <div className="mt-8">
+        <RequireAuth
+          title="Pour réserver ce véhicule"
+          reason="Créez un compte pour verser l'acompte en toute sécurité. Vous retrouverez votre reçu et le suivi de votre réservation dans votre espace client."
+        >
+          <ReservationFlow
+            slug={v.slug}
+            prix={v.prixTtc}
+            acompte={acompte}
+            titre={`${v.marque} ${v.modele} ${v.version}`}
+            photo={v.photos[0]}
+          />
+        </RequireAuth>
+      </div>
 
       <p className="mt-8 text-xs text-gray-500">
         L'acompte est encaissé via Stripe (paiement sécurisé). Il est déductible du prix final.

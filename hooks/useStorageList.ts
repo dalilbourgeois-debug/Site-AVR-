@@ -3,103 +3,115 @@
 import { useCallback, useEffect, useState } from "react";
 
 /**
- * Hook générique de liste persistée dans localStorage (sync entre onglets).
- * Utilisé pour les favoris et le comparateur.
+ * Hook générique de liste persistée dans localStorage.
+ *
+ * Particularité importante : on diffuse un CustomEvent quand on modifie
+ * la liste, afin que tous les composants utilisant le même hook sur la
+ * MÊME page se synchronisent immédiatement (l'évènement natif `storage`
+ * ne se déclenche que pour les autres onglets, pas pour la même page).
+ *
+ * Toutes les opérations d'écriture relisent d'abord le localStorage avant
+ * de modifier, pour éviter les écrasements (race conditions entre cartes).
  */
+
+function readList(key: string): string[] {
+  try {
+    const raw = window.localStorage.getItem(key);
+    const arr = raw ? JSON.parse(raw) : [];
+    return Array.isArray(arr) ? arr.filter((x) => typeof x === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeList(key: string, list: string[]) {
+  try {
+    window.localStorage.setItem(key, JSON.stringify(list));
+    // Diffuse à tous les autres hooks de cette page
+    window.dispatchEvent(new CustomEvent(`avr-storage-${key}`, { detail: list }));
+  } catch {
+    /* quota dépassé : ignore */
+  }
+}
+
 export function useStorageList(key: string, maxItems?: number) {
   const [items, setItems] = useState<string[]>([]);
   const [hydrated, setHydrated] = useState(false);
 
-  // Lecture initiale + écoute des changements (sync entre onglets)
+  // Synchronisation initiale + écoute des changements (autres onglets + autres composants)
   useEffect(() => {
-    const read = () => {
-      try {
-        const raw = window.localStorage.getItem(key);
-        const arr = raw ? (JSON.parse(raw) as string[]) : [];
-        setItems(Array.isArray(arr) ? arr : []);
-      } catch {
-        setItems([]);
-      }
+    const sync = () => {
+      setItems(readList(key));
       setHydrated(true);
     };
-    read();
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === key) read();
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, [key]);
+    sync();
 
-  const persist = useCallback(
-    (next: string[]) => {
-      setItems(next);
-      try {
-        window.localStorage.setItem(key, JSON.stringify(next));
-      } catch {
-        /* quota dépassé : on ignore */
-      }
-    },
-    [key]
-  );
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === key) sync();
+    };
+    const onCustom = (e: Event) => {
+      const ce = e as CustomEvent<string[]>;
+      if (Array.isArray(ce.detail)) setItems(ce.detail);
+      else sync();
+    };
+
+    window.addEventListener("storage", onStorage);
+    window.addEventListener(`avr-storage-${key}`, onCustom);
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener(`avr-storage-${key}`, onCustom);
+    };
+  }, [key]);
 
   const add = useCallback(
     (slug: string) => {
-      setItems((prev) => {
-        if (prev.includes(slug)) return prev;
-        let next = [...prev, slug];
-        if (maxItems && next.length > maxItems) {
-          // FIFO : on enlève le plus ancien si on dépasse la limite
-          next = next.slice(next.length - maxItems);
-        }
-        try {
-          window.localStorage.setItem(key, JSON.stringify(next));
-        } catch {
-          /* ignore */
-        }
-        return next;
-      });
+      const current = readList(key);
+      if (current.includes(slug)) return;
+      let next = [...current, slug];
+      if (maxItems && next.length > maxItems) {
+        next = next.slice(next.length - maxItems);
+      }
+      writeList(key, next);
+      setItems(next);
     },
     [key, maxItems]
   );
 
   const remove = useCallback(
     (slug: string) => {
-      setItems((prev) => {
-        const next = prev.filter((s) => s !== slug);
-        try {
-          window.localStorage.setItem(key, JSON.stringify(next));
-        } catch {
-          /* ignore */
-        }
-        return next;
-      });
+      const current = readList(key);
+      const next = current.filter((s) => s !== slug);
+      writeList(key, next);
+      setItems(next);
     },
     [key]
   );
 
   const toggle = useCallback(
     (slug: string) => {
-      setItems((prev) => {
-        const has = prev.includes(slug);
-        let next: string[];
-        if (has) next = prev.filter((s) => s !== slug);
-        else {
-          next = [...prev, slug];
-          if (maxItems && next.length > maxItems) next = next.slice(next.length - maxItems);
+      const current = readList(key);
+      const has = current.includes(slug);
+      let next: string[];
+      if (has) {
+        next = current.filter((s) => s !== slug);
+      } else {
+        next = [...current, slug];
+        if (maxItems && next.length > maxItems) {
+          next = next.slice(next.length - maxItems);
         }
-        try {
-          window.localStorage.setItem(key, JSON.stringify(next));
-        } catch {
-          /* ignore */
-        }
-        return next;
-      });
+      }
+      writeList(key, next);
+      setItems(next);
     },
     [key, maxItems]
   );
 
   const has = useCallback((slug: string) => items.includes(slug), [items]);
-  const clear = useCallback(() => persist([]), [persist]);
+
+  const clear = useCallback(() => {
+    writeList(key, []);
+    setItems([]);
+  }, [key]);
 
   return { items, count: items.length, has, add, remove, toggle, clear, hydrated };
 }

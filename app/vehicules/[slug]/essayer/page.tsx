@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getVehiculeBySlug } from "@/lib/data";
 import SimpleForm from "@/components/SimpleForm";
+import RequireAuth from "@/components/RequireAuth";
 
 export const metadata = { title: "Demande d'essai" };
 
@@ -22,26 +23,27 @@ export default async function EssayerPage({
       </p>
 
       <div className="mt-8">
-        <SimpleForm
-          endpoint="/api/leads/essai"
-          hidden={{ slug: v.slug, vin: v.vin }}
-          fields={[
-            { name: "nom", label: "Nom complet", required: true },
-            { name: "email", label: "Email", type: "email", required: true },
-            { name: "telephone", label: "Téléphone", type: "tel", required: true },
-            {
-              name: "creneau",
-              label: "Créneau souhaité",
-              type: "select",
-              required: true,
-              options: [
-                { value: "semaine-matin", label: "En semaine, matin" },
-                { value: "semaine-aprem", label: "En semaine, après-midi" }
-              ]
-            },
-            { name: "message", label: "Message (facultatif)", type: "textarea" }
-          ]}
-        />
+        <RequireAuth
+          title="Pour réserver un essai"
+          reason="Créez un compte pour qu'on puisse vous recontacter et que vous retrouviez la confirmation dans votre espace."
+        >
+          <SimpleForm
+            endpoint="/api/leads/essai"
+            hidden={{ slug: v.slug, vin: v.vin }}
+            fields={[
+              { name: "creneau",
+                label: "Créneau souhaité",
+                type: "select",
+                required: true,
+                options: [
+                  { value: "semaine-matin", label: "En semaine, matin" },
+                  { value: "semaine-aprem", label: "En semaine, après-midi" }
+                ]
+              },
+              { name: "message", label: "Message (facultatif)", type: "textarea" }
+            ]}
+          />
+        </RequireAuth>
       </div>
     </div>
   );

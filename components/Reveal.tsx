@@ -16,7 +16,7 @@ export default function Reveal({
   /** Délai en ms avant l'animation (utile pour des cascades) */
   delay?: number;
   /** Balise HTML utilisée (div par défaut) */
-  as?: keyof JSX.IntrinsicElements;
+  as?: keyof React.JSX.IntrinsicElements;
   className?: string;
 }) {
   const ref = useRef<HTMLElement | null>(null);

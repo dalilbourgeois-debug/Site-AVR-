@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useFavorites } from "@/hooks/useStorageList";
+import { useFavorisDB } from "@/hooks/useFavorisDB";
+import { useAuth } from "@/hooks/useAuth";
+import { openAuthModal } from "@/lib/auth-modal";
 
 // Menu structuré en 2 univers
 const linksParc = [
   { href: "/vehicules", label: "Nos véhicules" },
   { href: "/vehicules/vendus", label: "Vendus récemment" },
-  { href: "/vehicules/favoris", label: "Mes favoris" },
+  { href: "/compte/favoris", label: "Mes favoris" },
   { href: "/vehicules/comparer", label: "Comparateur" },
   { href: "/vendre-reprendre", label: "Vendre / Reprendre" }
 ];
@@ -25,7 +27,10 @@ const linksDivers = [
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
-  const fav = useFavorites();
+  const [menuCompteOpen, setMenuCompteOpen] = useState(false);
+  const fav = useFavorisDB();
+  const { isLoggedIn, profile, user, signOut } = useAuth();
+  const initiale = (profile?.prenom?.[0] ?? user?.email?.[0] ?? "?").toUpperCase();
 
   return (
     <header className="sticky top-0 z-40 bg-brand-dark border-b-2 border-brand-accent/60 shadow-sm">
@@ -60,7 +65,7 @@ export default function Nav() {
         {/* DROITE : favoris + créer un compte */}
         <div className="flex items-center justify-end gap-4">
           <Link
-            href="/vehicules/favoris"
+            href="/compte/favoris"
             aria-label="Mes favoris"
             className="relative p-2 text-white/90 hover:text-brand-accent transition-colors"
             title="Mes favoris"
@@ -74,16 +79,64 @@ export default function Nav() {
               </span>
             )}
           </Link>
-          <Link
-            href="/compte"
-            className="flex items-center gap-2 text-sm tracking-wide text-white/90 hover:text-brand-accent transition-colors"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <circle cx="12" cy="8" r="4" />
-              <path d="M4 21c0-4 4-7 8-7s8 3 8 7" />
-            </svg>
-            <span className="hidden sm:inline text-xs tracking-[0.3em] uppercase">Mon compte</span>
-          </Link>
+          {isLoggedIn ? (
+            <div className="relative">
+              <button
+                onClick={() => setMenuCompteOpen((v) => !v)}
+                onBlur={() => setTimeout(() => setMenuCompteOpen(false), 150)}
+                className="flex items-center gap-2 text-sm tracking-wide text-white/90 hover:text-brand-accent transition-colors"
+                aria-haspopup="menu"
+                aria-expanded={menuCompteOpen}
+              >
+                <span className="w-9 h-9 rounded-full bg-brand-accent text-white text-sm font-semibold flex items-center justify-center">
+                  {initiale}
+                </span>
+                <span className="hidden sm:inline text-xs tracking-[0.3em] uppercase">
+                  {profile?.prenom ?? "Mon compte"}
+                </span>
+              </button>
+
+              {menuCompteOpen && (
+                <div className="absolute right-0 top-full mt-2 w-56 bg-brand-dark border border-white/10 shadow-2xl">
+                  <div className="px-4 py-3 border-b border-white/10">
+                    <div className="text-[10px] tracking-[0.3em] uppercase text-white/50">Connecté</div>
+                    <div className="text-sm text-white truncate">{user?.email}</div>
+                  </div>
+                  <Link
+                    href="/compte"
+                    onClick={() => setMenuCompteOpen(false)}
+                    className="block px-4 py-2.5 text-sm hover:bg-white/5 hover:text-brand-accent transition-colors"
+                  >
+                    Mon tableau de bord
+                  </Link>
+                  <Link
+                    href="/compte/favoris"
+                    onClick={() => setMenuCompteOpen(false)}
+                    className="block px-4 py-2.5 text-sm hover:bg-white/5 hover:text-brand-accent transition-colors"
+                  >
+                    Mes favoris
+                  </Link>
+                  <button
+                    onClick={() => { setMenuCompteOpen(false); signOut(); }}
+                    className="w-full text-left block px-4 py-2.5 text-sm text-white/70 border-t border-white/10 hover:bg-white/5 hover:text-brand-accent transition-colors"
+                  >
+                    Déconnexion
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={() => openAuthModal()}
+              className="flex items-center gap-2 text-sm tracking-wide text-white/90 hover:text-brand-accent transition-colors"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 21c0-4 4-7 8-7s8 3 8 7" />
+              </svg>
+              <span className="hidden sm:inline text-xs tracking-[0.3em] uppercase">Se connecter</span>
+            </button>
+          )}
         </div>
       </div>
 

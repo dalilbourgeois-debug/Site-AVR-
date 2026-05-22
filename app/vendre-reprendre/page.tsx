@@ -15,6 +15,9 @@ export default function VendreReprendrePage() {
       <div className="mt-8">
         <SimpleForm
           endpoint="/api/leads/vente"
+          gateOnSubmit
+          gateTitle="Pour envoyer votre demande"
+          gateReason="Créez un compte (5 secondes avec Google) pour suivre votre estimation et retrouver la proposition du garage dans votre espace client. Vos infos déjà remplies sont conservées."
           fields={[
             {
               name: "type",
@@ -51,10 +54,7 @@ export default function VendreReprendrePage() {
               hint: "Photos extérieur/intérieur, carte grise, factures d'entretien… 6 fichiers max, 5 Mo chacun.",
               maxFiles: 6,
               maxSizeMb: 5
-            },
-            { name: "nom", label: "Nom complet", required: true },
-            { name: "email", label: "Email", type: "email", required: true },
-            { name: "telephone", label: "Téléphone", type: "tel", required: true }
+            }
           ]}
           buttonLabel="Demander mon estimation"
         />
@@ -62,6 +62,7 @@ export default function VendreReprendrePage() {
 
       <p className="mt-6 text-xs text-gray-500">
         L'estimation finale sera confirmée après inspection du véhicule à notre atelier.
+        Le contact (nom, email, téléphone) sera récupéré automatiquement depuis votre compte.
       </p>
     </div>
   );

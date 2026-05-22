@@ -17,17 +17,30 @@ const PARC: Section = {
   links: [
     { href: "/vehicules", label: "Tous nos véhicules" },
     { href: "/vehicules/vendus", label: "Vendus récemment" },
-    { href: "/vehicules/favoris", label: "Mes favoris" },
+    { href: "/compte/favoris", label: "Mes favoris" },
     { href: "/vehicules/comparer", label: "Comparateur" },
     { href: "/vendre-reprendre", label: "Vendre / Reprendre" }
   ]
 };
 
-// La section Atelier est désormais une one-page : pas besoin de sous-nav.
-// La SectionNav est cachée sur tous les /atelier*.
+// Atelier : la page est un one-page, donc les liens vers les sous-sections
+// sont des ancres (#carrosserie, #mecanique, #controle-technique)
+// qui scrollent vers la bonne partie de /atelier.
+const ATELIER: Section = {
+  id: "atelier",
+  label: "Atelier",
+  icon: "🛠️",
+  links: [
+    { href: "/atelier", label: "Tous nos services" },
+    { href: "/atelier#carrosserie", label: "Carrosserie" },
+    { href: "/atelier#mecanique", label: "Mécanique" },
+    { href: "/atelier#controle-technique", label: "Contrôle technique" }
+  ]
+};
 
 function getSection(pathname: string): Section | null {
   if (pathname.startsWith("/vehicules") || pathname.startsWith("/vendre-reprendre")) return PARC;
+  if (pathname.startsWith("/atelier")) return ATELIER;
   return null;
 }
 

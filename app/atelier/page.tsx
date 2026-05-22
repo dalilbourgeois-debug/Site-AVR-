@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
-import DecrirePanneForm from "./DecrirePanneForm";
 
 export const metadata = {
   title: "Atelier — mécanique, carrosserie, contrôle technique",
@@ -11,78 +10,16 @@ export const metadata = {
 export default function AtelierPage() {
   return (
     <>
-      {/* HERO atelier — 3 services présentés brièvement */}
-      <section className="relative bg-brand-dark text-white overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-25"
-          style={{ backgroundImage: "url(https://picsum.photos/seed/atelier-hero/1920/900)" }}
-        />
-        <div className="relative container-x py-20 md:py-24 text-center hero-text">
-          <div
-            className="text-xs md:text-sm tracking-[0.4em] text-brand-accent uppercase hero-anim hero-accent"
-            style={{ animationDelay: "150ms" }}
-          >
-            Atelier · Couëron
-          </div>
-          <h1
-            className="mt-4 font-serif text-4xl md:text-6xl leading-tight hero-title hero-anim hero-anim-title"
-            style={{ animationDelay: "350ms" }}
-          >
-            L'atelier AVR
-          </h1>
-          <p
-            className="mt-6 max-w-2xl mx-auto text-base md:text-lg text-white/85 hero-anim"
-            style={{ animationDelay: "850ms" }}
-          >
-            Trois expertises, un seul atelier de confiance.
+      {/* En-tête simple, comme /vehicules */}
+      <div className="container-x py-10">
+        <Reveal>
+          <div className="text-xs tracking-[0.4em] text-brand-accent uppercase">Atelier · Couëron</div>
+          <h1 className="mt-2 text-3xl md:text-4xl font-serif text-brand">L'atelier AVR</h1>
+          <p className="mt-2 text-gray-600">
+            Trois expertises, un seul atelier de confiance — mécanique, carrosserie, contrôle technique.
           </p>
-
-          {/* 3 mini-présentations */}
-          <div
-            className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto text-left hero-anim"
-            style={{ animationDelay: "1050ms" }}
-          >
-            <MiniIntro
-              href="#carrosserie"
-              icon="🎨"
-              label="Carrosserie"
-              desc="Sinistre, peinture, redressage. Agréé AXA et Direct Assurance."
-            />
-            <MiniIntro
-              href="#mecanique"
-              icon="🔧"
-              label="Mécanique"
-              desc="Toutes marques : révision, freins, distribution, diagnostic…"
-            />
-            <MiniIntro
-              href="#controle-technique"
-              icon="📋"
-              label="Contrôle technique"
-              desc="Centre agréé. Périodique ou contre-visite, sous 1 heure."
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Bandeau réassurance assurances */}
-      <section className="bg-white border-b border-gray-100">
-        <div className="container-x py-5 flex flex-wrap items-center justify-center gap-x-10 gap-y-3 text-sm text-gray-700">
-          <div className="flex items-center gap-2">
-            <span className="text-brand-accent">✓</span>
-            Agréé <strong className="font-semibold">AXA</strong>
-          </div>
-          <span className="hidden md:inline text-gray-300">·</span>
-          <div className="flex items-center gap-2">
-            <span className="text-brand-accent">✓</span>
-            Agréé <strong className="font-semibold">Direct Assurance</strong>
-          </div>
-          <span className="hidden md:inline text-gray-300">·</span>
-          <div className="flex items-center gap-2">
-            <span className="text-brand-accent">✓</span>
-            Prise en charge sinistre de A à Z
-          </div>
-        </div>
-      </section>
+        </Reveal>
+      </div>
 
       {/* SECTION 1 — CARROSSERIE (image gauche / texte droite) */}
       <SectionBlock
@@ -165,20 +102,6 @@ export default function AtelierPage() {
           ))}
         </div>
 
-        {/* Bloc "Décrivez votre panne" — exclusif à la mécanique */}
-        <div className="mt-8 bg-gray-50 border-l-2 border-brand-accent p-5">
-          <div className="text-[10px] tracking-[0.3em] uppercase text-brand-accent">
-            Pas sûr de la panne ?
-          </div>
-          <div className="mt-1 font-serif text-lg text-brand">
-            Décrivez-nous ce que vous observez
-          </div>
-          <p className="mt-2 text-sm text-gray-600">
-            Bruit suspect, voyant allumé, fumée, comportement bizarre… On
-            diagnostique pour vous.
-          </p>
-          <DecrirePanneForm />
-        </div>
       </SectionBlock>
 
       {/* SECTION 3 — CONTRÔLE TECHNIQUE (image gauche / texte droite) */}
@@ -238,32 +161,6 @@ export default function AtelierPage() {
         </div>
       </section>
     </>
-  );
-}
-
-function MiniIntro({
-  href,
-  icon,
-  label,
-  desc
-}: {
-  href: string;
-  icon: string;
-  label: string;
-  desc: string;
-}) {
-  return (
-    <a
-      href={href}
-      className="group block bg-white/5 border border-white/10 hover:border-brand-accent backdrop-blur p-5 transition-all"
-    >
-      <div className="text-3xl">{icon}</div>
-      <div className="mt-3 font-serif text-lg text-white">{label}</div>
-      <p className="mt-1 text-xs text-white/70 leading-relaxed">{desc}</p>
-      <div className="mt-3 text-[10px] tracking-[0.3em] uppercase text-brand-accent opacity-0 group-hover:opacity-100 transition">
-        En savoir + ↓
-      </div>
-    </a>
   );
 }
 

@@ -94,7 +94,7 @@ export default function RdvFlow({
 
   const [step, setStep] = useState<Step>(1);
   const [service, setService] = useState<string>(initService);
-  const [autreTexte, setAutreTexte] = useState(initDesc);
+  const [description, setDescription] = useState(initDesc);
   const [selectedDayIso, setSelectedDayIso] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [contact, setContact] = useState({ nom: "", email: "", telephone: "", immat: "" });
@@ -121,7 +121,7 @@ export default function RdvFlow({
         body: JSON.stringify({
           section: cfg.id,
           service,
-          autreTexte: service === "autre" ? autreTexte : "",
+          description,
           slot: selectedDay && selectedTime ? { day: selectedDay.label, time: selectedTime } : null,
           contact
         })
@@ -189,17 +189,29 @@ export default function RdvFlow({
               );
             })}
           </div>
-          {service === "autre" && (
-            <div className="mt-6">
-              <label className="label">Décrivez votre besoin</label>
-              <textarea
-                className="input min-h-[100px]"
-                value={autreTexte}
-                onChange={(e) => setAutreTexte(e.target.value)}
-                placeholder="Ex : bruit suspect côté roue avant droite, à diagnostiquer."
-              />
-            </div>
-          )}
+          {/* Description / précisions — toujours visible, optionnel */}
+          <div className="mt-6">
+            <label className="label">
+              {section === "mecanique"
+                ? "Décrivez votre panne ou vos précisions"
+                : "Précisions (facultatif)"}
+            </label>
+            <textarea
+              className="input min-h-[100px]"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder={
+                section === "mecanique"
+                  ? "Ex : depuis 2 jours, un bruit de cliquetis au démarrage côté avant droit, surtout à froid…"
+                  : "Détails utiles pour préparer votre rendez-vous"
+              }
+            />
+            {section === "mecanique" && (
+              <div className="mt-1 text-xs text-gray-500">
+                Bruit suspect, voyant allumé, fumée, comportement bizarre… On diagnostique pour vous.
+              </div>
+            )}
+          </div>
 
           {section === "carrosserie" && service === "sinistre" && (
             <div className="mt-6 bg-brand-accent/5 border-l-2 border-brand-accent p-4 text-sm text-gray-700">
@@ -211,7 +223,7 @@ export default function RdvFlow({
           <div className="mt-8 flex justify-end">
             <button
               className="inline-flex items-center justify-center px-8 py-3 bg-brand text-white text-sm tracking-[0.2em] uppercase hover:bg-brand-light transition disabled:opacity-40"
-              disabled={!service || (service === "autre" && !autreTexte.trim())}
+              disabled={!service || (service === "autre" && !description.trim())}
               onClick={() => setStep(2)}
             >
               Continuer →

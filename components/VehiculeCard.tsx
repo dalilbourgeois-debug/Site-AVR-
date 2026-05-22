@@ -3,17 +3,34 @@
 import Link from "next/link";
 import type { Vehicule } from "@/lib/types";
 import { formatEur, formatKm, joursDepuis } from "@/lib/format";
-import { useCompare, useFavorites } from "@/hooks/useStorageList";
+import { useCompare } from "@/hooks/useStorageList";
+import { useFavorisDB } from "@/hooks/useFavorisDB";
+import { useAuth } from "@/hooks/useAuth";
 import ShareButton from "@/components/ShareButton";
 import { showToast } from "@/lib/toast";
+import { openAuthModal } from "@/lib/auth-modal";
 
 export default function VehiculeCard({ v }: { v: Vehicule }) {
   const isNouveau = joursDepuis(v.dateArrivee) < 7;
-  const fav = useFavorites();
+  const fav = useFavorisDB();
   const cmp = useCompare();
+  const { isLoggedIn } = useAuth();
 
   const isFav = fav.has(v.slug);
   const isComparing = cmp.has(v.slug);
+
+  async function onToggleFav() {
+    if (!isLoggedIn) {
+      openAuthModal({
+        reason: `Pour ajouter le ${v.marque} ${v.modele} à vos favoris, créez un compte (5 secondes avec Google).`
+      });
+      return;
+    }
+    const res = await fav.toggle(v.slug);
+    if (res.ok) {
+      showToast(res.isFav ? `${v.marque} ${v.modele} ajouté à vos favoris` : "Retiré de vos favoris");
+    }
+  }
 
   return (
     <div className="group relative bg-white rounded-sm border border-gray-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-12px_rgba(255,0,0,0.25)] hover:border-brand-accent">
@@ -56,14 +73,7 @@ export default function VehiculeCard({ v }: { v: Vehicule }) {
         <button
           type="button"
           aria-label={isFav ? "Retirer des favoris" : "Ajouter aux favoris"}
-          onClick={() => {
-            fav.toggle(v.slug);
-            showToast(
-              isFav
-                ? `Retiré de vos favoris`
-                : `${v.marque} ${v.modele} ajouté à vos favoris`
-            );
-          }}
+          onClick={onToggleFav}
           className={`w-9 h-9 flex items-center justify-center rounded-full backdrop-blur transition-all ${
             isFav
               ? "bg-brand-accent text-white"
