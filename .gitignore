@@ -5,6 +5,7 @@ node_modules
 tmp
 public/uploads
 *.log
+tsconfig.tsbuildinfo
 
 # Captures unitaires régénérées par `npm run pdf` — on garde uniquement le PDF
 apercu/

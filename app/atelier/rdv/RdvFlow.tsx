@@ -2,17 +2,41 @@
 
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import {
+  Wrench,
+  Paintbrush,
+  ClipboardCheck,
+  Droplets,
+  Disc3,
+  Cog,
+  Wind,
+  MoveVertical,
+  Snowflake,
+  BatteryCharging,
+  CircleDot,
+  Square,
+  Activity,
+  MessageCircle,
+  AlertTriangle,
+  Hammer,
+  Sparkles,
+  Car,
+  Gem,
+  RotateCcw,
+  Check,
+  type LucideIcon
+} from "lucide-react";
 
 type Step = 1 | 2 | 3;
 export type SectionId = "mecanique" | "carrosserie" | "controle-technique";
 
-type Service = { id: string; label: string; icon: string; desc: string };
+type Service = { id: string; label: string; Icon: LucideIcon; desc: string };
 
 type SectionConfig = {
   id: SectionId;
   label: string;
   shortLabel: string;
-  icon: string;
+  Icon: LucideIcon;
   services: Service[];
 };
 
@@ -21,45 +45,45 @@ const CONFIG: Record<SectionId, SectionConfig> = {
     id: "mecanique",
     label: "Atelier mécanique",
     shortLabel: "Mécanique",
-    icon: "🔧",
+    Icon: Wrench,
     services: [
-      { id: "revision", label: "Révision / Vidange", icon: "🛢️", desc: "Vidange + filtres" },
-      { id: "freins", label: "Freins", icon: "🛞", desc: "Plaquettes, disques" },
-      { id: "distribution", label: "Distribution", icon: "⚙️", desc: "Kit de distribution" },
-      { id: "echappement", label: "Échappement", icon: "💨", desc: "Silencieux, FAP, AdBlue" },
-      { id: "suspension", label: "Suspension", icon: "🛠️", desc: "Amortisseurs, géométrie" },
-      { id: "climatisation", label: "Climatisation", icon: "❄️", desc: "Recharge, désinfection" },
-      { id: "batterie", label: "Batterie", icon: "🔋", desc: "Test, remplacement" },
-      { id: "pneus", label: "Pneus", icon: "🚗", desc: "Montage, équilibrage" },
-      { id: "vitrage", label: "Pare-brise / Vitrage", icon: "🪟", desc: "Remplacement, impact" },
-      { id: "diagnostic", label: "Diagnostic", icon: "📊", desc: "Électronique, pannes" },
-      { id: "autre", label: "Autre", icon: "💬", desc: "Je décris mon besoin" }
+      { id: "revision", label: "Révision / Vidange", Icon: Droplets, desc: "Vidange + filtres" },
+      { id: "freins", label: "Freins", Icon: Disc3, desc: "Plaquettes, disques" },
+      { id: "distribution", label: "Distribution", Icon: Cog, desc: "Kit de distribution" },
+      { id: "echappement", label: "Échappement", Icon: Wind, desc: "Silencieux, FAP, AdBlue" },
+      { id: "suspension", label: "Suspension", Icon: MoveVertical, desc: "Amortisseurs, géométrie" },
+      { id: "climatisation", label: "Climatisation", Icon: Snowflake, desc: "Recharge, désinfection" },
+      { id: "batterie", label: "Batterie", Icon: BatteryCharging, desc: "Test, remplacement" },
+      { id: "pneus", label: "Pneus", Icon: CircleDot, desc: "Montage, équilibrage" },
+      { id: "vitrage", label: "Pare-brise / Vitrage", Icon: Square, desc: "Remplacement, impact" },
+      { id: "diagnostic", label: "Diagnostic", Icon: Activity, desc: "Électronique, pannes" },
+      { id: "autre", label: "Autre", Icon: MessageCircle, desc: "Je décris mon besoin" }
     ]
   },
   carrosserie: {
     id: "carrosserie",
     label: "Atelier carrosserie",
     shortLabel: "Carrosserie",
-    icon: "🎨",
+    Icon: Paintbrush,
     services: [
-      { id: "sinistre", label: "Sinistre", icon: "🚨", desc: "Agréé AXA · Direct Assurance" },
-      { id: "peinture", label: "Peinture", icon: "🖌️", desc: "Totale ou partielle" },
-      { id: "redressage", label: "Redressage / Tôlerie", icon: "🔨", desc: "Banc châssis" },
-      { id: "smart-repair", label: "Smart Repair", icon: "✨", desc: "Petites rayures, impacts" },
-      { id: "plastique", label: "Pare-chocs / Plastique", icon: "🚙", desc: "Remplacement, peinture" },
-      { id: "polish", label: "Polish", icon: "💎", desc: "Rénovation peinture" },
-      { id: "autre", label: "Autre", icon: "💬", desc: "Je décris mon besoin" }
+      { id: "sinistre", label: "Sinistre", Icon: AlertTriangle, desc: "Agréé AXA · Direct Assurance" },
+      { id: "peinture", label: "Peinture", Icon: Paintbrush, desc: "Totale ou partielle" },
+      { id: "redressage", label: "Redressage / Tôlerie", Icon: Hammer, desc: "Banc châssis" },
+      { id: "smart-repair", label: "Smart Repair", Icon: Sparkles, desc: "Petites rayures, impacts" },
+      { id: "plastique", label: "Pare-chocs / Plastique", Icon: Car, desc: "Remplacement, peinture" },
+      { id: "polish", label: "Polish", Icon: Gem, desc: "Rénovation peinture" },
+      { id: "autre", label: "Autre", Icon: MessageCircle, desc: "Je décris mon besoin" }
     ]
   },
   "controle-technique": {
     id: "controle-technique",
     label: "Contrôle technique",
     shortLabel: "CT",
-    icon: "📋",
+    Icon: ClipboardCheck,
     services: [
-      { id: "ct-periodique", label: "Contrôle périodique", icon: "📋", desc: "Tous les 2 ans" },
-      { id: "contre-visite", label: "Contre-visite", icon: "🔄", desc: "Après réparation" },
-      { id: "autre", label: "Autre", icon: "💬", desc: "Je décris mon besoin" }
+      { id: "ct-periodique", label: "Contrôle périodique", Icon: ClipboardCheck, desc: "Tous les 2 ans" },
+      { id: "contre-visite", label: "Contre-visite", Icon: RotateCcw, desc: "Après réparation" },
+      { id: "autre", label: "Autre", Icon: MessageCircle, desc: "Je décris mon besoin" }
     ]
   }
 };
@@ -138,8 +162,8 @@ export default function RdvFlow({
   if (status === "ok") {
     return (
       <div className="bg-white border border-gray-100 p-10 text-center">
-        <div className="w-16 h-16 mx-auto rounded-full bg-brand-accent text-white flex items-center justify-center text-3xl">
-          ✓
+        <div className="w-16 h-16 mx-auto rounded-full bg-brand-accent text-white flex items-center justify-center">
+          <Check size={32} strokeWidth={2.2} aria-hidden="true" />
         </div>
         <h2 className="mt-4 text-2xl font-serif text-brand">Rendez-vous demandé</h2>
         <p className="mt-2 text-gray-700">
@@ -163,7 +187,7 @@ export default function RdvFlow({
       {step === 1 && (
         <div className="bg-white border border-gray-100 p-6 md:p-8 mt-8">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-xl" aria-hidden="true">{cfg.icon}</span>
+            <cfg.Icon size={20} strokeWidth={1.6} className="text-brand-accent" aria-hidden="true" />
             <h2 className="font-serif text-xl text-brand">Quelle prestation ?</h2>
           </div>
           <p className="text-sm text-gray-500 mb-6">Calendrier dédié à l'atelier <strong>{cfg.shortLabel.toLowerCase()}</strong>.</p>
@@ -182,7 +206,12 @@ export default function RdvFlow({
                       : "border-gray-200 hover:border-brand"
                   }`}
                 >
-                  <div className="text-2xl">{s.icon}</div>
+                  <s.Icon
+                    size={28}
+                    strokeWidth={1.5}
+                    className={isSelected ? "text-brand-accent" : "text-brand"}
+                    aria-hidden="true"
+                  />
                   <div className="mt-2 font-serif text-base text-brand">{s.label}</div>
                   <div className="text-xs text-gray-500 mt-1">{s.desc}</div>
                 </button>
@@ -236,7 +265,7 @@ export default function RdvFlow({
       {step === 2 && (
         <div className="bg-white border border-gray-100 p-6 md:p-8 mt-8">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-xl" aria-hidden="true">{cfg.icon}</span>
+            <cfg.Icon size={20} strokeWidth={1.6} className="text-brand-accent" aria-hidden="true" />
             <h2 className="font-serif text-xl text-brand">Choisissez votre créneau</h2>
           </div>
           <p className="text-sm text-gray-500 mb-6">
@@ -433,7 +462,7 @@ function Steps({ step }: { step: Step }) {
                 done ? "bg-brand text-white" : active ? "bg-brand-accent text-white" : "bg-gray-200 text-gray-500"
               }`}
             >
-              {done ? "✓" : n}
+              {done ? <Check size={18} strokeWidth={2.4} aria-hidden="true" /> : n}
             </div>
             <span className={`hidden sm:inline tracking-[0.2em] uppercase text-xs ${active ? "font-semibold text-brand" : "text-gray-400"}`}>
               {l}

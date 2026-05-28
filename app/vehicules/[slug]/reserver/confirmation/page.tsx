@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CheckCircle2 } from "lucide-react";
 import { getVehiculeBySlug } from "@/lib/data";
 
 export const metadata = { title: "Réservation confirmée" };
@@ -18,7 +19,7 @@ export default async function ConfirmationPage({
 
   return (
     <div className="container-x py-16 max-w-2xl text-center">
-      <div className="text-6xl">🎉</div>
+      <CheckCircle2 size={72} strokeWidth={1.4} className="mx-auto text-brand-accent" aria-hidden="true" />
       <h1 className="mt-4 text-3xl font-bold text-brand">Réservation confirmée</h1>
       <p className="mt-3 text-gray-700">
         Merci{sp.nom ? `, ${sp.nom}` : ""} ! Votre acompte est bien enregistré pour le{" "}

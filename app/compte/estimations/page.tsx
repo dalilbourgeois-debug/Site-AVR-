@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Wallet } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { createClient } from "@/lib/supabase/client";
 import { formatDate, formatEur } from "@/lib/format";
@@ -56,7 +57,7 @@ export default function EstimationsPage() {
 
       {!loading && items.length === 0 && (
         <div className="mt-8 bg-white border border-gray-100 p-10 text-center">
-          <div className="text-5xl">💰</div>
+          <Wallet size={48} strokeWidth={1.4} className="mx-auto text-brand-accent" aria-hidden="true" />
           <p className="mt-4 text-gray-600 max-w-md mx-auto">
             Aucune demande pour l'instant. Faites estimer votre véhicule gratuitement
             en quelques clics.

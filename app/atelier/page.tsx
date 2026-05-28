@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Check } from "lucide-react";
 import Reveal from "@/components/Reveal";
 
 export const metadata = {
@@ -27,7 +28,7 @@ export default function AtelierPage() {
         bg="bg-gray-50"
         surtitre="Atelier · Carrosserie"
         titre="On remet votre carrosserie à neuf."
-        image="https://picsum.photos/seed/carrosserie-bloc/1200/900"
+        image="/images/image%20carrosserie.png"
         imageAlt="Atelier carrosserie"
         imagePosition="left"
         rdvHref="/atelier/carrosserie/rdv"
@@ -54,7 +55,7 @@ export default function AtelierPage() {
             "Polish & rénovation"
           ].map((p) => (
             <div key={p} className="flex items-center gap-2">
-              <span className="text-brand-accent">✓</span>
+              <Check size={16} strokeWidth={2.2} className="text-brand-accent shrink-0" aria-hidden="true" />
               <span className="text-gray-700">{p}</span>
             </div>
           ))}
@@ -67,7 +68,7 @@ export default function AtelierPage() {
         bg="bg-white"
         surtitre="Atelier · Mécanique"
         titre="Toutes interventions, toutes marques."
-        image="https://picsum.photos/seed/mecanique-bloc/1200/900"
+        image="/images/m%C3%A9canique.jpg"
         imageAlt="Atelier mécanique"
         imagePosition="right"
         rdvHref="/atelier/mecanique/rdv"
@@ -96,7 +97,7 @@ export default function AtelierPage() {
             "Diagnostic"
           ].map((p) => (
             <div key={p} className="flex items-center gap-2">
-              <span className="text-brand-accent">✓</span>
+              <Check size={16} strokeWidth={2.2} className="text-brand-accent shrink-0" aria-hidden="true" />
               <span className="text-gray-700">{p}</span>
             </div>
           ))}
@@ -110,7 +111,7 @@ export default function AtelierPage() {
         bg="bg-gray-50"
         surtitre="Atelier · Contrôle technique"
         titre="Contrôle technique sur rendez-vous."
-        image="https://picsum.photos/seed/ct-bloc/1200/900"
+        image="/images/CT.png"
         imageAlt="Contrôle technique"
         imagePosition="left"
         rdvHref="/atelier/controle-technique/rdv"
@@ -133,7 +134,7 @@ export default function AtelierPage() {
             "Rapport remis sur place"
           ].map((p) => (
             <div key={p} className="flex items-center gap-2">
-              <span className="text-brand-accent">✓</span>
+              <Check size={16} strokeWidth={2.2} className="text-brand-accent shrink-0" aria-hidden="true" />
               <span className="text-gray-700">{p}</span>
             </div>
           ))}
@@ -190,10 +191,12 @@ function SectionBlock({
   return (
     <section id={id} className={`${bg} scroll-mt-32 py-20`}>
       <div className="container-x grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-        {/* Image */}
+        {/* Image avec liseré rouge subtil */}
         <Reveal variant={imagePosition === "left" ? "left" : "right"} className={imagePosition === "right" ? "lg:order-2" : ""}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={image} alt={imageAlt} className="w-full aspect-[4/3] object-cover" />
+          <div className="p-0.5 bg-brand-accent">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={image} alt={imageAlt} className="w-full aspect-[4/3] object-cover block" />
+          </div>
         </Reveal>
 
         {/* Texte */}

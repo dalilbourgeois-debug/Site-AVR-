@@ -3,6 +3,16 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
+import {
+  LayoutDashboard,
+  Heart,
+  Wallet,
+  Car,
+  CalendarCheck,
+  FileText,
+  Settings,
+  type LucideIcon
+} from "lucide-react";
 import { useAuth, type Profile } from "@/hooks/useAuth";
 import { openAuthModal } from "@/lib/auth-modal";
 
@@ -11,14 +21,14 @@ function isProfileComplete(p: Profile | null): boolean {
   return Boolean(p.prenom?.trim() && p.nom?.trim() && p.telephone?.trim() && p.adresse?.trim());
 }
 
-const ITEMS = [
-  { href: "/compte",              icon: "🏠", label: "Tableau de bord" },
-  { href: "/compte/favoris",      icon: "♡",  label: "Mes favoris" },
-  { href: "/compte/estimations",  icon: "💰", label: "Mes estimations" },
-  { href: "/compte/reservations", icon: "🚗", label: "Mes réservations" },
-  { href: "/compte/rdv",          icon: "🛠️", label: "Mes RDV" },
-  { href: "/compte/documents",    icon: "📄", label: "Mes documents" },
-  { href: "/compte/parametres",   icon: "⚙️", label: "Mes informations" }
+const ITEMS: { href: string; Icon: LucideIcon; label: string }[] = [
+  { href: "/compte",              Icon: LayoutDashboard, label: "Tableau de bord" },
+  { href: "/compte/favoris",      Icon: Heart,           label: "Mes favoris" },
+  { href: "/compte/estimations",  Icon: Wallet,          label: "Mes estimations" },
+  { href: "/compte/reservations", Icon: Car,             label: "Mes réservations" },
+  { href: "/compte/rdv",          Icon: CalendarCheck,   label: "Mes RDV" },
+  { href: "/compte/documents",    Icon: FileText,        label: "Mes documents" },
+  { href: "/compte/parametres",   Icon: Settings,        label: "Mes informations" }
 ];
 
 export default function CompteLayout({ children }: { children: React.ReactNode }) {
@@ -113,7 +123,7 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
                             : "text-gray-700 hover:bg-gray-50 hover:text-brand-accent"
                         }`}
                       >
-                        <span className="text-base" aria-hidden="true">{item.icon}</span>
+                        <item.Icon size={18} strokeWidth={1.6} aria-hidden="true" />
                         <span>{item.label}</span>
                       </Link>
                     </li>

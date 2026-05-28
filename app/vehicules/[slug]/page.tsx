@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Check } from "lucide-react";
 import Gallery from "@/components/Gallery";
 import VehiculeCard from "@/components/VehiculeCard";
 import Reveal from "@/components/Reveal";
@@ -79,7 +80,7 @@ export default async function VehiculeDetailPage({
                 </div>
                 {v.garantieLibelle && (
                   <div className="mt-4 pt-4 border-t border-white/10 text-sm text-white/90 flex items-start gap-2">
-                    <span className="text-brand-accent shrink-0">✓</span>
+                    <Check size={16} strokeWidth={2.2} className="text-brand-accent shrink-0" aria-hidden="true" />
                     <span>{v.garantieLibelle}</span>
                   </div>
                 )}

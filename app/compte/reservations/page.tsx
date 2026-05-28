@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Car } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { createClient } from "@/lib/supabase/client";
 import { formatDate, formatEur } from "@/lib/format";
@@ -51,7 +52,7 @@ export default function ReservationsPage() {
 
       {!loading && items.length === 0 && (
         <div className="mt-8 bg-white border border-gray-100 p-10 text-center">
-          <div className="text-5xl">🚗</div>
+          <Car size={48} strokeWidth={1.4} className="mx-auto text-brand-accent" aria-hidden="true" />
           <p className="mt-4 text-gray-600 max-w-md mx-auto">
             Aucune réservation pour l'instant. Découvrez notre parc et réservez
             le véhicule qui vous plaît avec un acompte de 5%.

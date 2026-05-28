@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Check } from "lucide-react";
 import { formatEur } from "@/lib/format";
 
 type Step = 1 | 2 | 3;
@@ -129,7 +130,7 @@ function Steps({ step }: { step: Step }) {
                 done ? "bg-brand text-white" : active ? "bg-brand-accent text-brand" : "bg-gray-200 text-gray-500"
               }`}
             >
-              {done ? "✓" : n}
+              {done ? <Check size={14} strokeWidth={2.6} aria-hidden="true" /> : n}
             </div>
             <span className={active ? "font-semibold text-brand" : "text-gray-500"}>{l}</span>
             {i < labels.length - 1 && <div className="flex-1 h-px bg-gray-200" />}

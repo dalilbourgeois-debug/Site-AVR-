@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Wrench, Paintbrush, ClipboardCheck, type LucideIcon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { createClient } from "@/lib/supabase/client";
 import { formatDate } from "@/lib/format";
@@ -18,10 +19,10 @@ type RDV = {
   created_at: string;
 };
 
-const SECTION_LABEL: Record<string, { label: string; icon: string }> = {
-  mecanique:            { label: "Mécanique", icon: "🔧" },
-  carrosserie:          { label: "Carrosserie", icon: "🎨" },
-  "controle-technique": { label: "Contrôle technique", icon: "📋" }
+const SECTION_LABEL: Record<string, { label: string; Icon: LucideIcon }> = {
+  mecanique:            { label: "Mécanique", Icon: Wrench },
+  carrosserie:          { label: "Carrosserie", Icon: Paintbrush },
+  "controle-technique": { label: "Contrôle technique", Icon: ClipboardCheck }
 };
 
 export default function RdvPage() {
@@ -59,7 +60,7 @@ export default function RdvPage() {
 
       {!loading && items.length === 0 && (
         <div className="mt-8 bg-white border border-gray-100 p-10 text-center">
-          <div className="text-5xl">🛠️</div>
+          <Wrench size={48} strokeWidth={1.4} className="mx-auto text-brand-accent" aria-hidden="true" />
           <p className="mt-4 text-gray-600 max-w-md mx-auto">
             Aucun rendez-vous pour l'instant. Prenez RDV en quelques clics pour
             une intervention sur votre véhicule.
@@ -76,13 +77,14 @@ export default function RdvPage() {
       {!loading && items.length > 0 && (
         <div className="mt-8 space-y-4">
           {items.map((r) => {
-            const sec = SECTION_LABEL[r.section] ?? { label: r.section, icon: "·" };
+            const sec = SECTION_LABEL[r.section] ?? { label: r.section, Icon: Wrench };
             return (
               <div key={r.id} className="bg-white border border-gray-100 p-5">
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div>
-                    <div className="text-xs tracking-[0.3em] uppercase text-brand-accent">
-                      {sec.icon} {sec.label}
+                    <div className="flex items-center gap-1.5 text-xs tracking-[0.3em] uppercase text-brand-accent">
+                      <sec.Icon size={14} strokeWidth={1.8} aria-hidden="true" />
+                      <span>{sec.label}</span>
                     </div>
                     <div className="mt-1 font-serif text-lg text-brand">{r.prestation}</div>
                     {r.immatriculation && (

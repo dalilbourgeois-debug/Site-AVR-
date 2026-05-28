@@ -31,7 +31,7 @@ export default function GaragePage() {
         </div>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://picsum.photos/seed/equipe/1200/800"
+          src="/images/notre%20histoire%201.jpg"
           alt="L'équipe AVR"
           className="rounded-lg shadow-md w-full h-auto"
         />

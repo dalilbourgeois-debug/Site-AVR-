@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { Car, Wrench } from "lucide-react";
 import { useFavorisDB } from "@/hooks/useFavorisDB";
 import { useAuth } from "@/hooks/useAuth";
 import { openAuthModal } from "@/lib/auth-modal";
@@ -159,7 +160,7 @@ export default function Nav() {
               {/* Univers 1 — LE PARC */}
               <section>
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="text-2xl">🚗</span>
+                  <Car size={22} strokeWidth={1.5} className="text-brand-accent" />
                   <div className="text-[10px] tracking-[0.4em] text-brand-accent uppercase">Le parc</div>
                 </div>
                 <nav className="space-y-0.5 pl-1 border-l-2 border-brand-accent/40">
@@ -179,7 +180,7 @@ export default function Nav() {
               {/* Univers 2 — ATELIER */}
               <section>
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="text-2xl">🛠️</span>
+                  <Wrench size={22} strokeWidth={1.5} className="text-brand-accent" />
                   <div className="text-[10px] tracking-[0.4em] text-brand-accent uppercase">Atelier</div>
                 </div>
                 <nav className="space-y-0.5 pl-1 border-l-2 border-brand-accent/40">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { FileText } from "lucide-react";
 
 export type FileUploadProps = {
   /** Liste actuelle des fichiers (contrôlée par le parent) */
@@ -156,7 +157,7 @@ export default function FileUpload({
                     </div>
                   ) : (
                     <div className="aspect-square flex flex-col items-center justify-center bg-gray-50 text-gray-500">
-                      <div className="text-3xl">📄</div>
+                      <FileText size={32} strokeWidth={1.5} aria-hidden="true" />
                       <div className="text-[10px] tracking-widest uppercase mt-2">PDF</div>
                     </div>
                   )}

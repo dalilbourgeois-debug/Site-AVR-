@@ -142,12 +142,14 @@ export default function HomePage() {
             </div>
           </Reveal>
           <Reveal variant="right">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="https://picsum.photos/seed/avr-equipe/1200/900"
-              alt="L'équipe AVR Automobile"
-              className="w-full h-auto shadow-md"
-            />
+            <div className="p-0.5 bg-brand-accent">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/notre%20histoire%201.jpg"
+                alt="L'histoire d'AVR Automobile"
+                className="w-full h-auto block shadow-md"
+              />
+            </div>
           </Reveal>
         </div>
       </section>

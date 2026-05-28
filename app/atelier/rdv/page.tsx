@@ -1,29 +1,27 @@
 import Link from "next/link";
+import { Wrench, Paintbrush, ClipboardCheck, type LucideIcon } from "lucide-react";
 import Reveal from "@/components/Reveal";
 
 export const metadata = { title: "Prendre RDV atelier" };
 
-const SECTIONS = [
+const SECTIONS: { href: string; Icon: LucideIcon; label: string; desc: string }[] = [
   {
     href: "/atelier/mecanique/rdv",
-    icon: "🔧",
+    Icon: Wrench,
     label: "Mécanique",
-    desc: "Révision, freins, distribution, diagnostic, pneus, climatisation, vitrage…",
-    color: "from-brand to-brand-light"
+    desc: "Révision, freins, distribution, diagnostic, pneus, climatisation, vitrage…"
   },
   {
     href: "/atelier/carrosserie/rdv",
-    icon: "🎨",
+    Icon: Paintbrush,
     label: "Carrosserie",
-    desc: "Sinistre, peinture, redressage, pare-chocs, Smart Repair, polish…",
-    color: "from-brand to-brand-light"
+    desc: "Sinistre, peinture, redressage, pare-chocs, Smart Repair, polish…"
   },
   {
     href: "/atelier/controle-technique/rdv",
-    icon: "📋",
+    Icon: ClipboardCheck,
     label: "Contrôle technique",
-    desc: "Contrôle périodique et contre-visite. Résultat sous 1 heure.",
-    color: "from-brand to-brand-light"
+    desc: "Contrôle périodique et contre-visite. Résultat sous 1 heure."
   }
 ];
 
@@ -53,7 +51,7 @@ export default function RdvHubPage() {
               {/* Liseré rouge animé en haut */}
               <div className="h-[3px] bg-brand-accent origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
               <div className="p-8 text-center">
-                <div className="text-5xl">{s.icon}</div>
+                <s.Icon size={48} strokeWidth={1.4} className="mx-auto text-brand-accent" aria-hidden="true" />
                 <div className="mt-4 text-xl font-serif text-brand">{s.label}</div>
                 <p className="mt-3 text-sm text-gray-600">{s.desc}</p>
                 <div className="mt-6 inline-flex items-center text-xs tracking-[0.25em] uppercase text-brand-accent">

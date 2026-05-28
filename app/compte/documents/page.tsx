@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { FileText, ReceiptText, ClipboardList, Car, Wallet, CreditCard, File, type LucideIcon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { createClient } from "@/lib/supabase/client";
 import { formatDate } from "@/lib/format";
@@ -24,13 +25,13 @@ const TYPE_LABEL: Record<string, string> = {
   autre:          "Document"
 };
 
-const TYPE_ICON: Record<string, string> = {
-  facture:      "🧾",
-  devis:        "📋",
-  carte_grise:  "🚗",
-  estimation:   "💰",
-  recu_acompte: "💳",
-  autre:        "📄"
+const TYPE_ICON: Record<string, LucideIcon> = {
+  facture:      ReceiptText,
+  devis:        ClipboardList,
+  carte_grise:  Car,
+  estimation:   Wallet,
+  recu_acompte: CreditCard,
+  autre:        File
 };
 
 export default function DocumentsPage() {
@@ -80,7 +81,7 @@ export default function DocumentsPage() {
 
       {!loading && items.length === 0 && (
         <div className="mt-8 bg-white border border-gray-100 p-10 text-center">
-          <div className="text-5xl">📄</div>
+          <FileText size={48} strokeWidth={1.4} className="mx-auto text-brand-accent" aria-hidden="true" />
           <p className="mt-4 text-gray-600 max-w-md mx-auto">
             Aucun document pour l'instant. Quand le garage vous transmettra une
             facture ou un devis, vous le retrouverez ici.
@@ -95,7 +96,17 @@ export default function DocumentsPage() {
               key={d.id}
               className={`flex items-center gap-4 px-5 py-4 ${i > 0 ? "border-t border-gray-100" : ""}`}
             >
-              <div className="text-2xl shrink-0">{TYPE_ICON[d.type] ?? "📄"}</div>
+              {(() => {
+                const TypeIcon = TYPE_ICON[d.type] ?? File;
+                return (
+                  <TypeIcon
+                    size={28}
+                    strokeWidth={1.5}
+                    className="shrink-0 text-brand-accent"
+                    aria-hidden="true"
+                  />
+                );
+              })()}
               <div className="flex-1 min-w-0">
                 <div className="text-[10px] tracking-widest uppercase text-brand-accent">
                   {TYPE_LABEL[d.type] ?? "Document"}

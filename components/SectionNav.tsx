@@ -2,18 +2,19 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Car, Wrench, type LucideIcon } from "lucide-react";
 
 type Section = {
   id: "parc" | "atelier";
   label: string;
-  icon: string;
+  Icon: LucideIcon;
   links: { href: string; label: string }[];
 };
 
 const PARC: Section = {
   id: "parc",
   label: "Le parc",
-  icon: "🚗",
+  Icon: Car,
   links: [
     { href: "/vehicules", label: "Tous nos véhicules" },
     { href: "/vehicules/vendus", label: "Vendus récemment" },
@@ -23,18 +24,19 @@ const PARC: Section = {
   ]
 };
 
-// Atelier : la page est un one-page, donc les liens vers les sous-sections
-// sont des ancres (#carrosserie, #mecanique, #controle-technique)
-// qui scrollent vers la bonne partie de /atelier.
+// Atelier : "Tous nos services" amène sur la one-page de présentation,
+// les 3 autres liens amènent DIRECTEMENT sur la prise de RDV de chaque univers
+// (logique : si on clique "Carrosserie" dans la sous-nav, on veut réserver,
+// pas relire la présentation).
 const ATELIER: Section = {
   id: "atelier",
   label: "Atelier",
-  icon: "🛠️",
+  Icon: Wrench,
   links: [
     { href: "/atelier", label: "Tous nos services" },
-    { href: "/atelier#carrosserie", label: "Carrosserie" },
-    { href: "/atelier#mecanique", label: "Mécanique" },
-    { href: "/atelier#controle-technique", label: "Contrôle technique" }
+    { href: "/atelier/carrosserie/rdv", label: "Carrosserie" },
+    { href: "/atelier/mecanique/rdv", label: "Mécanique" },
+    { href: "/atelier/controle-technique/rdv", label: "Contrôle technique" }
   ]
 };
 
@@ -62,7 +64,7 @@ export default function SectionNav() {
         <div className="flex items-center gap-6 h-12 overflow-x-auto no-scrollbar">
           {/* Label de section */}
           <div className="flex items-center gap-2 shrink-0 text-xs tracking-[0.3em] uppercase text-brand-accent">
-            <span aria-hidden="true">{section.icon}</span>
+            <section.Icon size={16} strokeWidth={1.8} aria-hidden="true" />
             <span>{section.label}</span>
           </div>
 

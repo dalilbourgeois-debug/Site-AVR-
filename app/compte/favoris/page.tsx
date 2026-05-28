@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Heart } from "lucide-react";
 import VehiculeCard from "@/components/VehiculeCard";
 import { useFavorisDB } from "@/hooks/useFavorisDB";
 import { vehicules } from "@/lib/data";
@@ -30,10 +31,10 @@ export default function FavorisPage() {
 
       {items.length === 0 ? (
         <div className="mt-8 bg-white border border-gray-100 p-10 text-center">
-          <div className="text-5xl">♡</div>
+          <Heart size={48} strokeWidth={1.4} className="mx-auto text-brand-accent" aria-hidden="true" />
           <p className="mt-4 text-gray-600 max-w-md mx-auto">
-            Parcourez le parc et cliquez sur le <span className="text-brand-accent">♡</span> des
-            véhicules qui vous plaisent pour les retrouver ici.
+            Parcourez le parc et cliquez sur le cœur des véhicules qui vous plaisent
+            pour les retrouver ici.
           </p>
           <Link
             href="/vehicules"
