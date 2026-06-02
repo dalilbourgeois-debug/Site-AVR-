@@ -1,16 +1,29 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useCompare } from "@/hooks/useStorageList";
-import { vehicules } from "@/lib/data";
+import { getVehiculesBySlugsClient } from "@/lib/data-client";
+import type { Vehicule } from "@/lib/types";
 
 export default function CompareBar() {
   const cmp = useCompare();
-  if (!cmp.hydrated || cmp.count === 0) return null;
+  const [selected, setSelected] = useState<Vehicule[]>([]);
 
-  const selected = cmp.items
-    .map((slug) => vehicules.find((v) => v.slug === slug))
-    .filter(Boolean) as typeof vehicules;
+  useEffect(() => {
+    if (!cmp.hydrated) return;
+    let cancelled = false;
+    (async () => {
+      if (cmp.items.length === 0) { if (!cancelled) setSelected([]); return; }
+      const rows = await getVehiculesBySlugsClient(cmp.items);
+      const bySlug = new Map(rows.map((v) => [v.slug, v]));
+      const sorted = cmp.items.map((s) => bySlug.get(s)).filter(Boolean) as Vehicule[];
+      if (!cancelled) setSelected(sorted);
+    })();
+    return () => { cancelled = true; };
+  }, [cmp.hydrated, cmp.items]);
+
+  if (!cmp.hydrated || cmp.count === 0) return null;
 
   return (
     <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-[95%] max-w-3xl">

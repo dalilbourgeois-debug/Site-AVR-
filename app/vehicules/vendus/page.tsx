@@ -7,8 +7,8 @@ export const metadata = {
   description: "Découvrez les véhicules récemment vendus par AVR Automobile."
 };
 
-export default function VendusPage() {
-  const liste = getVendus();
+export default async function VendusPage() {
+  const liste = await getVendus();
   return (
     <div className="container-x py-10">
       <h1 className="text-3xl font-bold text-brand">Vendus récemment</h1>

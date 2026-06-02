@@ -5,7 +5,7 @@ import Gallery from "@/components/Gallery";
 import VehiculeCard from "@/components/VehiculeCard";
 import Reveal from "@/components/Reveal";
 import ShareButton from "@/components/ShareButton";
-import { getSimilaires, getVehiculeBySlug, vehicules } from "@/lib/data";
+import { getSimilaires, getVehiculeBySlug, getAllSlugs } from "@/lib/data";
 import { formatDate, formatEur, formatKm } from "@/lib/format";
 import type { Metadata } from "next";
 
@@ -13,7 +13,7 @@ export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
   const { slug } = await params;
-  const v = getVehiculeBySlug(slug);
+  const v = await getVehiculeBySlug(slug);
   if (!v) return {};
   return {
     title: `${v.marque} ${v.modele} ${v.version}`,
@@ -21,8 +21,9 @@ export async function generateMetadata(
   };
 }
 
-export function generateStaticParams() {
-  return vehicules.map((v) => ({ slug: v.slug }));
+export async function generateStaticParams() {
+  const slugs = await getAllSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export default async function VehiculeDetailPage({
@@ -31,9 +32,9 @@ export default async function VehiculeDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const v = getVehiculeBySlug(slug);
+  const v = await getVehiculeBySlug(slug);
   if (!v) notFound();
-  const similaires = getSimilaires(v);
+  const similaires = await getSimilaires(v);
 
   return (
     <>

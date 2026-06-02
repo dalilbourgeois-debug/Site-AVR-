@@ -1,18 +1,30 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useCompare } from "@/hooks/useStorageList";
-import { vehicules } from "@/lib/data";
+import { getVehiculesBySlugsClient } from "@/lib/data-client";
 import { formatDate, formatEur, formatKm } from "@/lib/format";
 import type { Vehicule } from "@/lib/types";
 
 export default function CompareurPage() {
   const cmp = useCompare();
-  if (!cmp.hydrated) return null;
+  const [items, setItems] = useState<Vehicule[]>([]);
 
-  const items = cmp.items
-    .map((slug) => vehicules.find((v) => v.slug === slug))
-    .filter(Boolean) as Vehicule[];
+  useEffect(() => {
+    if (!cmp.hydrated) return;
+    let cancelled = false;
+    (async () => {
+      if (cmp.items.length === 0) { if (!cancelled) setItems([]); return; }
+      const rows = await getVehiculesBySlugsClient(cmp.items);
+      const bySlug = new Map(rows.map((v) => [v.slug, v]));
+      const sorted = cmp.items.map((s) => bySlug.get(s)).filter(Boolean) as Vehicule[];
+      if (!cancelled) setItems(sorted);
+    })();
+    return () => { cancelled = true; };
+  }, [cmp.hydrated, cmp.items]);
+
+  if (!cmp.hydrated) return null;
 
   if (items.length === 0) {
     return (

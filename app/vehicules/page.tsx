@@ -13,7 +13,7 @@ export default async function VehiculesListPage({
   searchParams: Promise<SP>;
 }) {
   const sp = await searchParams;
-  const tous = getVehicules();
+  const tous = await getVehicules();
 
   const marques = [...new Set(tous.map((v) => v.marque))].sort();
   const energies = [...new Set(tous.map((v) => v.energie))].sort();

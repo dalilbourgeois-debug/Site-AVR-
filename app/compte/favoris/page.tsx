@@ -1,21 +1,38 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Heart } from "lucide-react";
 import VehiculeCard from "@/components/VehiculeCard";
 import { useFavorisDB } from "@/hooks/useFavorisDB";
-import { vehicules } from "@/lib/data";
+import { getVehiculesBySlugsClient } from "@/lib/data-client";
+import type { Vehicule } from "@/lib/types";
 
 export default function FavorisPage() {
   const fav = useFavorisDB();
+  const [items, setItems] = useState<Vehicule[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  if (!fav.hydrated) {
+  useEffect(() => {
+    if (!fav.hydrated) return;
+    let cancelled = false;
+    (async () => {
+      if (fav.slugs.length === 0) {
+        if (!cancelled) { setItems([]); setLoading(false); }
+        return;
+      }
+      const rows = await getVehiculesBySlugsClient(fav.slugs);
+      // Trie selon l'ordre des slugs dans fav.slugs (ordre d'ajout)
+      const bySlug = new Map(rows.map((v) => [v.slug, v]));
+      const sorted = fav.slugs.map((s) => bySlug.get(s)).filter(Boolean) as Vehicule[];
+      if (!cancelled) { setItems(sorted); setLoading(false); }
+    })();
+    return () => { cancelled = true; };
+  }, [fav.hydrated, fav.slugs]);
+
+  if (!fav.hydrated || loading) {
     return <div className="text-sm text-gray-500">Chargement de vos favoris...</div>;
   }
-
-  const items = fav.slugs
-    .map((slug) => vehicules.find((v) => v.slug === slug))
-    .filter(Boolean);
 
   return (
     <div>
@@ -45,7 +62,7 @@ export default function FavorisPage() {
         </div>
       ) : (
         <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {items.map((v) => v && <VehiculeCard key={v.id} v={v} />)}
+          {items.map((v) => <VehiculeCard key={v.id} v={v} />)}
         </div>
       )}
     </div>

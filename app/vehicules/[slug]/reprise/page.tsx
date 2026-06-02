@@ -11,7 +11,7 @@ export default async function RepriseVehiculePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const v = getVehiculeBySlug(slug);
+  const v = await getVehiculeBySlug(slug);
   if (!v) notFound();
 
   return (

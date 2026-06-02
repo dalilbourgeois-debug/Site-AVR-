@@ -12,7 +12,7 @@ export default async function ReserverPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const v = getVehiculeBySlug(slug);
+  const v = await getVehiculeBySlug(slug);
   if (!v) notFound();
 
   const acompte = Math.round(v.prixTtc * 0.05);

@@ -14,7 +14,7 @@ export default async function ConfirmationPage({
 }) {
   const { slug } = await params;
   const sp = await searchParams;
-  const v = getVehiculeBySlug(slug);
+  const v = await getVehiculeBySlug(slug);
   if (!v) notFound();
 
   return (

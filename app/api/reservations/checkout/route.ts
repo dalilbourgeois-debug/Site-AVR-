@@ -23,7 +23,7 @@ export async function POST(req: Request) {
   }
   const { slug, nom, email, telephone, adresse } = parsed.data;
 
-  const v = getVehiculeBySlug(slug);
+  const v = await getVehiculeBySlug(slug);
   if (!v) return NextResponse.json({ error: "Véhicule introuvable" }, { status: 404 });
   if (v.statut !== "disponible") {
     return NextResponse.json({ error: "Véhicule non disponible" }, { status: 409 });
