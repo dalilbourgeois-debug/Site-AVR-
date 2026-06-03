@@ -63,15 +63,23 @@ export default function Filters({
 
   return (
     <>
-      <div className="lg:hidden">
-        <button onClick={() => setOpen(true)} className="btn-outline w-full">
-          Filtrer
+      {/* Bouton "Filtrer" : sticky en haut sur mobile pour rester toujours accessible */}
+      <div className="lg:hidden sticky top-32 z-20 -mx-4 sm:-mx-6 px-4 sm:px-6 py-2 bg-[#faf7f4]/95 backdrop-blur supports-[backdrop-filter]:bg-[#faf7f4]/80">
+        <button
+          onClick={() => setOpen(true)}
+          className="w-full inline-flex items-center justify-center gap-2 h-11 bg-brand text-white text-xs tracking-[0.2em] uppercase hover:bg-brand-light transition shadow-sm"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M3 6h18M6 12h12M10 18h4" />
+          </svg>
+          Filtrer & Trier
         </button>
       </div>
       <aside
         className={`${open ? "fixed inset-0 z-50 bg-white p-6 overflow-y-auto" : "hidden"} lg:block lg:static lg:p-0 lg:bg-transparent`}
       >
-        <div className="lg:sticky lg:top-20 space-y-5">
+        {/* Sticky desktop : 128px pour passer SOUS Nav (80px) + SectionNav (48px) */}
+        <div className="lg:sticky lg:top-32 space-y-5 lg:max-h-[calc(100vh-9rem)] lg:overflow-y-auto lg:pr-2">
           <div className="flex items-center justify-between lg:hidden">
             <div className="font-semibold text-brand">Filtres</div>
             <button onClick={() => setOpen(false)} aria-label="Fermer">✕</button>

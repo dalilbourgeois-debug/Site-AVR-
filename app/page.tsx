@@ -60,7 +60,7 @@ export default function HomePage() {
             className="relative h-[55vh] min-h-[420px] bg-cover bg-center flex flex-col items-center justify-center text-center px-6 hero-text border-t-2 border-brand-accent"
             style={{
               backgroundImage:
-                "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.70) 100%), url(/images/image%20hero%203.avif)"
+                "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.70) 100%), url(/images/image%20hero%204.png)"
             }}
           >
             <div className="text-[10px] tracking-[0.4em] text-brand-accent uppercase hero-anim hero-accent">
@@ -180,8 +180,8 @@ export default function HomePage() {
                   </a>
                 </InfoRow>
                 <InfoRow label="Horaires">
-                  Lundi – Vendredi · 9h → 12h / 14h → 18h<br />
-                  Samedi · Fermé<br />
+                  Lundi – Vendredi · 8h → 12h / 14h → 19h<br />
+                  Samedi · 9h → 12h / 14h → 18h<br />
                   Dimanche · Fermé
                 </InfoRow>
                 <InfoRow label="Transports" last>

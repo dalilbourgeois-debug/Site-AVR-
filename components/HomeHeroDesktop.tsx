@@ -90,7 +90,7 @@ export default function HomeHeroDesktop() {
           className="absolute inset-0 bg-cover transition-transform duration-700 ease-out"
           style={{
             backgroundImage:
-              "linear-gradient(to bottom, rgba(0,0,0,0.50) 0%, rgba(0,0,0,0.65) 100%), url(/images/image%20hero%203.avif)",
+              "linear-gradient(to bottom, rgba(0,0,0,0.50) 0%, rgba(0,0,0,0.65) 100%), url(/images/image%20hero%204.png)",
             backgroundPosition: "10% center",
             transform: side === "right" ? "scale(1.04)" : "scale(1)"
           }}

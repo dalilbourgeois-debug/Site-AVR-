@@ -147,9 +147,12 @@ export default function AtelierPage() {
           <Reveal>
             <div className="text-xs tracking-[0.4em] uppercase text-brand-accent">Horaires atelier</div>
             <div className="mt-3 text-2xl md:text-3xl font-serif">
-              Lundi – Vendredi · 9h–12h / 14h–18h
+              Lundi – Vendredi · 8h–12h / 14h–19h
             </div>
-            <div className="mt-1 text-sm text-white/60">Fermé le week-end</div>
+            <div className="mt-2 text-base md:text-lg text-white/85 font-serif">
+              Samedi · 9h–12h / 14h–18h
+            </div>
+            <div className="mt-1 text-sm text-white/60">Fermé le dimanche</div>
             <div className="mt-6">
               <a
                 href="tel:0240862102"

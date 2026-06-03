@@ -64,7 +64,7 @@ export default function RdvHubPage() {
       </div>
 
       <div className="mt-12 text-center text-xs tracking-widest uppercase text-gray-500">
-        Horaires atelier · Lundi → vendredi · 9h–12h / 14h–18h · fermé le week-end
+        Horaires atelier · Lun–Ven 8h–12h / 14h–19h · Sam 9h–12h / 14h–18h · fermé le dimanche
       </div>
     </div>
   );

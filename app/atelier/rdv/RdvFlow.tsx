@@ -89,7 +89,7 @@ const CONFIG: Record<SectionId, SectionConfig> = {
 };
 
 const MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
-const JOURS_SHORT = ["Lun", "Mar", "Mer", "Jeu", "Ven"];
+const JOURS_SHORT = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
 
 type DaySlot = {
   date: Date;
@@ -269,7 +269,7 @@ export default function RdvFlow({
             <h2 className="font-serif text-xl text-brand">Choisissez votre créneau</h2>
           </div>
           <p className="text-sm text-gray-500 mb-6">
-            Créneaux du planning <strong>{cfg.shortLabel.toLowerCase()}</strong>, lundi → vendredi, 9h–12h / 14h–18h.
+            Créneaux du planning <strong>{cfg.shortLabel.toLowerCase()}</strong> · Lun–Ven 8h–12h / 14h–19h · Sam 9h–12h / 14h–18h.
           </p>
 
           <div className="text-xs tracking-[0.3em] uppercase text-brand-accent mb-3">
@@ -501,10 +501,13 @@ function generateDays(nb: number, section: SectionId): DaySlot[] {
   while (out.length < nb && i < 30) {
     const d = new Date(todayMs.getTime() + i * 86400000);
     const dayIdx = d.getDay();
-    if (dayIdx === 0 || dayIdx === 6) { i++; continue; } // week-end fermé
+    if (dayIdx === 0) { i++; continue; } // dimanche fermé
 
-    // Plage 9h-12h / 14h-18h, créneaux d'une heure
-    let times = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
+    // Lun–Ven : 8h–12h / 14h–19h (créneaux d'une heure)
+    // Samedi  : 9h–12h / 14h–18h
+    let times = dayIdx === 6
+      ? ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"]
+      : ["08:00", "09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
 
     // Indispos simulées par section pour montrer que les calendriers sont distincts
     const seed = sectionSeed(section) + i;

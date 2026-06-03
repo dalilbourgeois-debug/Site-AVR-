@@ -1,5 +1,5 @@
 import "./globals.css";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Nav from "@/components/Nav";
 import SectionNav from "@/components/SectionNav";
 import Footer from "@/components/Footer";
@@ -18,6 +18,15 @@ export const metadata: Metadata = {
     type: "website",
     locale: "fr_FR"
   }
+};
+
+// Viewport mobile : fige la largeur sur la largeur du device,
+// empêche le zoom intempestif au focus des champs (iOS)
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#000000"
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

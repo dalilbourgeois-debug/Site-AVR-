@@ -15,7 +15,7 @@ export default function ContactPage() {
           <li><strong>Adresse :</strong> 27 rue des Maraîchers, 44220 Couëron</li>
           <li><strong>Téléphone :</strong> 02 40 86 21 02</li>
           <li><strong>Email :</strong> contact@avr-automobile.fr</li>
-          <li><strong>Horaires :</strong> Lun–Ven 9h–12h / 14h–18h · fermé le week-end</li>
+          <li><strong>Horaires :</strong> Lun–Ven 8h–12h / 14h–19h · Sam 9h–12h / 14h–18h · fermé le dimanche</li>
         </ul>
         <div className="mt-6 rounded-lg overflow-hidden border bg-white aspect-[4/3]">
           <iframe
