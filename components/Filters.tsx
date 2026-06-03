@@ -63,17 +63,18 @@ export default function Filters({
 
   return (
     <>
-      {/* Bouton flottant fixe sur mobile — ne bouge JAMAIS pendant le scroll */}
-      <button
-        onClick={() => setOpen(true)}
-        className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-30 inline-flex items-center justify-center gap-2 h-12 px-6 bg-brand text-white text-xs tracking-[0.2em] uppercase shadow-2xl shadow-black/30 hover:bg-brand-light transition"
-        aria-label="Ouvrir les filtres"
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M3 6h18M6 12h12M10 18h4" />
-        </svg>
-        Filtrer & Trier
-      </button>
+      {/* Bouton Filtrer : statique en haut de la page sur mobile */}
+      <div className="lg:hidden">
+        <button
+          onClick={() => setOpen(true)}
+          className="w-full inline-flex items-center justify-center gap-2 h-12 bg-brand text-white text-xs tracking-[0.2em] uppercase hover:bg-brand-light transition"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M3 6h18M6 12h12M10 18h4" />
+          </svg>
+          Filtrer
+        </button>
+      </div>
       <aside
         className={`${open ? "fixed inset-0 z-50 bg-white p-6 overflow-y-auto" : "hidden"} lg:block lg:static lg:p-0 lg:bg-transparent`}
       >
