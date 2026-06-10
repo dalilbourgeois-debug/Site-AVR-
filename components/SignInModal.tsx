@@ -27,7 +27,11 @@ export default function SignInModal() {
     try {
       const supabase = createClient();
       const redirectTo = state.redirectTo ?? (typeof window !== "undefined" ? window.location.pathname + window.location.search : "/compte");
-      const callback = `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`;
+      // On force l'origin canonique (https://avrauto.fr) au lieu de window.location.origin
+      // pour éviter que Supabase fallback sur Site URL si le navigateur est sur www.avrauto.fr
+      // ou un autre variant. NEXT_PUBLIC_SITE_URL est défini dans .env.local (prod = https://avrauto.fr).
+      const canonicalOrigin = process.env.NEXT_PUBLIC_SITE_URL ?? (typeof window !== "undefined" ? window.location.origin : "");
+      const callback = `${canonicalOrigin}/auth/callback?next=${encodeURIComponent(redirectTo)}`;
 
       const { error: err } = await supabase.auth.signInWithOAuth({
         provider: "google",
