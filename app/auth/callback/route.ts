@@ -12,7 +12,10 @@ import { createServerClient } from "@supabase/ssr";
  * tant qu'on n'a pas rechargé manuellement la page.
  */
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams, origin: reqOrigin } = new URL(request.url);
+  // Force toujours l'origine canonique (https://avrauto.fr) pour les redirects,
+  // pour eviter d'atterrir sur www.avrauto.fr ou pire sur un host parasite.
+  const origin = process.env.NEXT_PUBLIC_SITE_URL ?? reqOrigin;
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/compte";
   const errorParam = searchParams.get("error");
